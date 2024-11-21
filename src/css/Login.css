@@ -1,0 +1,129 @@
+.container-xxl {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.navbar{
+    width: 100%;
+}
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group .d-flex {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #007BFF;
+}
+
+.input-group .fa-eye, .input-group .fa-eye-slash {
+    cursor: pointer;
+    margin-left: 10px;
+}        
+.login-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 30px 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.login-container h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+}
+.input-group {
+    margin-bottom: 15px;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #777;
+    font-weight: 500;
+}
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+.input-group input:focus {
+    border-color: #007BFF;
+}
+.button-group {
+    margin-top: 20px;
+}
+.button-group button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+.button-group button:hover {
+    background-color: #0056b3;
+}
+.register-link {
+    display: block;
+    margin-top: 15px;
+    color: #007BFF;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.register-link:hover {
+    color: #0056b3;
+}
+.input-group .d-flex {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative; /* Added */
+}
+
+.input-group input {
+    padding-right: 40px; /* Space for the eye icon */
+}
+
+#togglePassword {
+    position: absolute; /* Added */
+    right: 10px; /* Adjust distance from the right */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Center vertically */
+    cursor: pointer;
+}

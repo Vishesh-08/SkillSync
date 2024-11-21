@@ -1,0 +1,81 @@
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.skills-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+}
+.select-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.placeholder {
+    color: #888;
+}
+.selected-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.arrow {
+    font-size: 14px;
+    color: #666;
+}
+.skills-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+.skills-dropdown div {
+    padding: 8px;
+    cursor: pointer;
+}
+.skills-dropdown div:hover {
+    background-color: #f1f1f1;
+}
+.skill-bubble {
+    background-color: #e0f7fa;
+    border: 1px solid #4dd0e1;
+    border-radius: 15px;
+    padding: 5px 10px;
+    margin: 2px;
+    display: inline-flex;
+    align-items: center;
+}
+.skill-bubble .remove-btn {
+    margin-left: 8px;
+    color: #00796b;
+    cursor: pointer;
+    font-weight: bold;
+}
+input[type="submit"] {
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    width: 100%;
+}
+input[type="submit"]:hover {
+    background-color: #004d40;
+}

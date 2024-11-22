@@ -2,35 +2,18 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Using react-icons for eye icons
 import '../css/Login.css'; // Assuming you have a CSS file for styling
-import axios from 'axios';
 
 const StudentLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
- 
- 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password) {
-      try {
-        const response = await axios.post("http://localhost:5000/api/students/login", {
-          email,
-          password,
-        });
-
-        if (response.status === 200) {
-          console.log(response.data);
-          alert("Login successful");
-        } else {
-          alert("Something went wrong!");
-        }
-      } catch (error) {
-        console.error("Error during login:", error.response?.data || error.message);
-        alert(error.response?.data?.error || "An error occurred. Please try again.");
-      }
+      alert(`Login attempt with Gmail ID: ${email}`);
+      // Add your authentication logic here (e.g., Firebase, OAuth, API call)
     } else {
       alert('Please fill out both fields.');
     }
@@ -42,6 +25,7 @@ const StudentLogin = () => {
   };
 
   return (
+    <div className="centered-form">
     <div className="login-container">
       <h2>Student Login</h2>
       <form id="loginForm" onSubmit={handleSubmit}>
@@ -84,6 +68,7 @@ const StudentLogin = () => {
           Not registered? Sign up here
         </NavLink>
       </form>
+    </div>
     </div>
   );
 };

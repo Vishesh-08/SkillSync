@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import "../css/StudentRegister.css";
+import React, { useState,useEffect } from 'react';
+import "../css/StudentRegister.css"
+import "../godfather_css/style.css";
+import { cities } from './cities';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const StudentRegistration = () => {
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    password:'',
     phone: '',
     dob: '',
     location: '',
@@ -18,9 +23,8 @@ const StudentRegistration = () => {
     certifications: '',
     resume: null,
     portfolio: '',
-    password:'',confirmPassword:'',
-    jobType: 'Full-Time',
-    relocate: 'YES',
+    jobType: '',
+    relocate: '',
   });
 
   const handleChange = (e) => {
@@ -30,7 +34,9 @@ const StudentRegistration = () => {
       [name]: value,
     });
   };
+
   
+
   const handleFileChange = (e) => {
     const { files } = e.target;
     const file = files[0];
@@ -48,6 +54,14 @@ const StudentRegistration = () => {
   
     setFormData({ ...formData, resume: file });
   };
+
+  //skills script
+  
+
+  const handleDropdownToggle = (event) => {
+    event.stopPropagation();
+    setIsDropdownVisible(!isDropdownVisible);
+  };
   
 
   const handleSkillSelect = (skill) => {
@@ -59,6 +73,28 @@ const StudentRegistration = () => {
   const handleSkillRemove = (skill) => {
     setSelectedSkills(selectedSkills.filter((s) => s !== skill));
   };
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!event.target.closest('.skills-container')) {
+        setIsDropdownVisible(false);
+      }
+    };
+  
+    document.addEventListener('click', handleOutsideClick);
+  
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,6 +117,7 @@ const StudentRegistration = () => {
     // Append text fields to FormData
     submissionData.append("fullName", formData.fullName);
     submissionData.append("email", formData.email);
+    submissionData.append("password",formData.password);
     submissionData.append("phone", formData.phone);
     submissionData.append("dob", formData.dob);
     submissionData.append("location", formData.location);
@@ -116,11 +153,9 @@ const StudentRegistration = () => {
       alert("Error: " + (error.response?.data?.message));
     }
   };
-  
-  
 
   return (
-    <div className="container py-5">
+    <div className="registration-form" >
       <h1 className="mb-4 text-center">Student Registration</h1>
       <form onSubmit={handleSubmit}>
         {/* Personal Information Section */}
@@ -157,35 +192,26 @@ const StudentRegistration = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Password:
-            </label>
+          <label htmlFor="password" className="form-label">Password:</label>
+          <div className="d-flex align-items-center">
             <input
-              type="password"
-              id="pasword"
+              type={showPassword ? 'text' : 'password'}
+              id="password"
               name="password"
+              placeholder="Enter your password"
               className="form-control"
-              placeholder="password"
               value={formData.password}
               onChange={handleChange}
               required
             />
+            <span
+              onClick={togglePasswordVisibility}
+              style={{ cursor: 'pointer', marginLeft: '8px' }}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
           </div>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Confirm Password:
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              className="form-control"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        </div>
           <div className="mb-3">
             <label htmlFor="phone" className="form-label">
               Phone Number:
@@ -198,6 +224,7 @@ const StudentRegistration = () => {
               placeholder="Enter your phone number"
               value={formData.phone}
               onChange={handleChange}
+              pattern="[0-9]*"
               required
             />
           </div>
@@ -227,9 +254,14 @@ const StudentRegistration = () => {
               onChange={handleChange}
               required
             >
-              {/* You can dynamically populate this with your list of locations */}
-              <option value="">Select your city or region</option>
-              <option value="kanpur">kanpur</option>
+              
+              
+              {cities.map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
+
             </select>
           </div>
         </fieldset>
@@ -304,13 +336,16 @@ const StudentRegistration = () => {
               CGPA:
             </label>
             <input
-              type="text"
+              type="number"
               id="gpa"
               name="gpa"
               className="form-control"
               placeholder="Enter your CGPA"
               value={formData.gpa}
               onChange={handleChange}
+              min="0"  // Minimum value allowed
+              max="10" // Maximum value allowed
+              step="0.1" // Allow up to two decimal points (if needed)
               required
             />
           </div>
@@ -318,25 +353,62 @@ const StudentRegistration = () => {
 
         {/* Skills & Interests Section */}
         <fieldset className="border p-3 mb-4">
-          <legend className="w-auto">Skills & Interests</legend>
-          <div>
-            <label htmlFor="skills">Skills:</label>
-            <div className="skills-container">
-              <div className="select-box" onClick={() => document.getElementById('skills-dropdown').style.display = 'block'}>
-                <span className="placeholder">{selectedSkills.length ? selectedSkills.join(', ') : 'Select skills...'}</span>
-                <div className="selected-skills"></div>
-                <span className="arrow">&#9662;</span>
-              </div>
-              <div className="skills-dropdown" id="skills-dropdown">
-                {['Communication', 'Conflict Resolution', 'Employee Relations', 'Data Analysis', 'Problem Solving', 'Strategic Planning', 'Java', 'Spring Boot', 'Hibernate', 'REST API', 'MongoDB', 'Express.js', 'React.js', 'Node.js', 'PHP', 'Laravel', 'WordPress', 'MySQL'].map((skill) => (
-                  <div key={skill} onClick={() => handleSkillSelect(skill)}>
-                    {skill}
-                  </div>
-                ))}
-              </div>
+  <legend className="w-auto">Skills & Interests</legend>
+  <div>
+    <label htmlFor="skills">Skills:</label>
+    <div className="skills-container" onClick={handleDropdownToggle}>
+      <div className="select-box">
+        {/* Placeholder hidden when there are selected skills */}
+        <span className="placeholder" style={{ display: selectedSkills.length ? 'none' : 'block' }}>
+          Select skills...
+        </span>
+        {/* Render selected skills as bubbles */}
+        <div className="selected-skills">
+          {selectedSkills.map((skill, index) => (
+            <div key={index} className="skill-bubble">
+              {skill}
+              <span className="remove-btn" onClick={() => handleSkillRemove(skill)}>
+                ×
+              </span>
             </div>
-          </div>
-        </fieldset>
+          ))}
+        </div>
+        {/* Dropdown toggle arrow */}
+        <span className="arrow">&#9662;</span>
+      </div>
+      {/* Conditionally render dropdown */}
+      {isDropdownVisible && (
+        <div className="skills-dropdown">
+          {[
+            'Communication',
+            'Conflict Resolution',
+            'Employee Relations',
+            'Data Analysis',
+            'Problem Solving',
+            'Strategic Planning',
+            'Java',
+            'Spring Boot',
+            'Hibernate',
+            'REST API',
+            'MongoDB',
+            'Express.js',
+            'React.js',
+            'Node.js',
+            'PHP',
+            'Laravel',
+            'WordPress',
+            'MySQL',
+          ].map((skill) => (
+            <div key={skill} onClick={() => handleSkillSelect(skill)}>
+              {skill}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</fieldset>
+
 
         {/* Portfolio or Resume Section */}
         <fieldset className="border p-3 mb-4">
@@ -416,5 +488,3 @@ const StudentRegistration = () => {
 };
 
 export default StudentRegistration;
-
-

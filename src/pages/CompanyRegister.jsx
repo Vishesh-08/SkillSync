@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
+import { useNavigate} from 'react-router-dom';
+import { error } from 'jquery';
 
 const CompanyRegistration = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const navigate=useNavigate()
     const [formData, setFormData] = useState({
         companyName: '',
         companyLogo: null,
@@ -64,7 +67,13 @@ const CompanyRegistration = () => {
                 }
             });
 
-            console.log("Company registered successfully:", response.data);
+            if(response.status==201){
+                alert("registration successfull ")
+                navigate("/businesslogin")
+            }
+            else{
+                throw error("failed to register");
+            }
         } catch (error) {
             console.error("Error during registration:", error);
             alert("Error during registration. Please try again.");

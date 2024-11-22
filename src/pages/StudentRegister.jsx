@@ -9,10 +9,12 @@ const StudentRegistration = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password:'',
+    confirmPassword:'',
     phone: '',
     dob: '',
     location: '',
@@ -93,6 +95,9 @@ const StudentRegistration = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
   
 
 
@@ -129,13 +134,14 @@ const StudentRegistration = () => {
     submissionData.append("gpa", formData.gpa);
     submissionData.append("jobType", formData.jobType);
     submissionData.append("relocate", formData.relocate);
-    submissionData.append("password", formData.password); // Append password
+     // Append password
   
     submissionData.append("skills", JSON.stringify(selectedSkills));
   
     if (formData.resume) {
       submissionData.append("resume", formData.resume);
     }
+    
   
     try {
       const response = await axios.post("http://localhost:5000/api/students/register", submissionData, {
@@ -213,6 +219,28 @@ const StudentRegistration = () => {
             </span>
           </div>
         </div>
+        <div className="mb-3">
+          <label htmlFor="Confirm password" className="form-label">Confirm Password:</label>
+          <div className="d-flex align-items-center">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Enter your password"
+              className="form-control"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+            <span
+              onClick={toggleConfirmPasswordVisibility}
+              style={{ cursor: 'pointer', marginLeft: '8px' }}
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+        </div>
+        
           <div className="mb-3">
             <label htmlFor="phone" className="form-label">
               Phone Number:

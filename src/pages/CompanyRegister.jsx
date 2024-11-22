@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const CompanyRegistration = () => {
+    const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         companyName: '',
         companyLogo: null,
@@ -10,6 +11,7 @@ const CompanyRegistration = () => {
         numberOfEmployees: '',
         contactPerson: '',
         email: '',
+        password:'',
         phone: '',
         address: '',
         website: '',
@@ -27,46 +29,15 @@ const CompanyRegistration = () => {
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match. Please try again.");
-            return;
-        }
-
-        const formDataToSubmit = new FormData();
-
-        // Append regular fields
-        Object.keys(formData).forEach((key) => {
-            if (key !== "companyLogo" && key !== "verificationDocuments") {
-                formDataToSubmit.append(key, formData[key]);
-            }
-        });
-
-        // Append files
-        if (formData.companyLogo) {
-            
-            formDataToSubmit.append("companyLogo", formData.companyLogo);
-        }
-        if (formData.verificationDocuments) {
-            formDataToSubmit.append("verificationDocuments", formData.verificationDocuments);
-        }
-
-        try {
-            const response = await axios.post("http://localhost:5000/api/companies/register", formDataToSubmit, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            });
-
-            console.log("Company registered successfully:", response.data);
-        } catch (error) {
-            console.error("Error during registration:", error);
-            alert("Error during registration. Please try again.");
-        }
+        // Handle form submission logic
+        console.log('Form submitted', formData);
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+      };
 
     return (
         <div className="registration-form">
@@ -176,31 +147,27 @@ const CompanyRegistration = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
+                <div className="mb-3">
+                    <label htmlFor="password" className="form-label">Password:</label>
+                    <div className="d-flex align-items-center">
+                        <input
+                        type={showPassword ? 'text' : 'password'}
                         id="password"
                         name="password"
-                        placeholder="Enter password"
+                        placeholder="Enter your password"
+                        className="form-control"
                         value={formData.password}
                         onChange={handleChange}
                         required
-                    />
+                        />
+                        <span
+                        onClick={togglePasswordVisibility}
+                        style={{ cursor: 'pointer', marginLeft: '8px' }}
+                        >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        placeholder="Confirm password"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        required
-                    /></div>
                 <div className="form-group">
                     <label htmlFor="phone">Phone Number</label>
                     <input

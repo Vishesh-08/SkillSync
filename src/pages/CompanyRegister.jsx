@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import axios from 'axios'
+import axios from 'axios';
 
 const CompanyRegistration = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
         companyName: '',
         companyLogo: null,
@@ -12,7 +13,8 @@ const CompanyRegistration = () => {
         numberOfEmployees: '',
         contactPerson: '',
         email: '',
-        password:'',
+        password: '',
+        confirmPassword: '',
         phone: '',
         address: '',
         website: '',
@@ -49,7 +51,6 @@ const CompanyRegistration = () => {
 
         // Append files
         if (formData.companyLogo) {
-            
             formDataToSubmit.append("companyLogo", formData.companyLogo);
         }
         if (formData.verificationDocuments) {
@@ -70,11 +71,13 @@ const CompanyRegistration = () => {
         }
     };
 
-
-
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
-      };
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
 
     return (
         <div className="registration-form">
@@ -184,27 +187,52 @@ const CompanyRegistration = () => {
                         required
                     />
                 </div>
+
+                {/* Password and Confirm Password */}
                 <div className="mb-3">
                     <label htmlFor="password" className="form-label">Password:</label>
                     <div className="d-flex align-items-center">
                         <input
-                        type={showPassword ? 'text' : 'password'}
-                        id="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        className="form-control"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
+                            type={showPassword ? 'text' : 'password'}
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            className="form-control"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
                         />
                         <span
-                        onClick={togglePasswordVisibility}
-                        style={{ cursor: 'pointer', marginLeft: '8px' }}
+                            onClick={togglePasswordVisibility}
+                            style={{ cursor: 'pointer', marginLeft: '8px' }}
                         >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </span>
                     </div>
                 </div>
+                <div className="mb-3">
+                    <label htmlFor="confirmPassword" className="form-label">Confirm Password:</label>
+                    <div className="d-flex align-items-center">
+                        <input
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Enter your password"
+                            className="form-control"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            required
+                        />
+                        <span
+                            onClick={toggleConfirmPasswordVisibility}
+                            style={{ cursor: 'pointer', marginLeft: '8px' }}
+                        >
+                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Other Inputs */}
                 <div className="form-group">
                     <label htmlFor="phone">Phone Number</label>
                     <input
@@ -272,21 +300,21 @@ const CompanyRegistration = () => {
                     />
                 </div>
 
-                {/* Additional Information */}
-                <div className="form-section-title">Additional Information</div>
+                {/* Social Media Links */}
                 <div className="form-group">
                     <label htmlFor="socialMediaLinks">Social Media Links</label>
                     <input
-                        type="url"
+                        type="text"
                         className="form-control"
                         id="socialMediaLinks"
                         name="socialMediaLinks"
-                        placeholder="Enter LinkedIn, Twitter, etc."
+                        placeholder="Enter social media links"
                         value={formData.socialMediaLinks}
                         onChange={handleChange}
-                        required
                     />
                 </div>
+
+                {/* GDPR Consent */}
                 <div className="form-check">
                     <input
                         type="checkbox"
@@ -298,9 +326,11 @@ const CompanyRegistration = () => {
                         required
                     />
                     <label className="form-check-label" htmlFor="gdprConsent">
-                        I agree to the <a href="">GDPR/Privacy Policy</a>
+                        I agree to the GDPR Terms and Conditions.
                     </label>
                 </div>
+
+                {/* Submit Button */}
                 <button type="submit" className="btn btn-primary mt-3">Register</button>
             </form>
         </div>

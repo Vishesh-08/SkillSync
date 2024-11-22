@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Using react-icons for eye icons
 import '../css/Login.css'; // Assuming you have a CSS file for styling
+import axios from 'axios';
 
 const StudentLogin = () => {
   const [email, setEmail] = useState('');
@@ -9,16 +10,29 @@ const StudentLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (email && password) {
-      alert(`Login attempt with Gmail ID: ${email}`);
-      // Add your authentication logic here (e.g., Firebase, OAuth, API call)
+      try {
+        const response = await axios.post("http://localhost:5000/api/students/login", {
+          email,
+          password,
+        });
+
+        if (response.status === 200) {
+          console.log(response.data);
+          alert("Login successful");
+        } else {
+          alert("Something went wrong!");
+        }
+      } catch (error) {
+        console.error("Error during login:", error.response?.data || error.message);
+        alert(error.response?.data?.error || "An error occurred. Please try again.");
+      }
     } else {
       alert('Please fill out both fields.');
     }
   };
-
   // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

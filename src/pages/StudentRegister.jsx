@@ -3,6 +3,7 @@ import "../css/StudentRegister.css"
 import "../godfather_css/style.css";
 import { cities } from './cities';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import axios from 'axios';
 
 const StudentRegistration = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -23,8 +24,8 @@ const StudentRegistration = () => {
     certifications: '',
     resume: null,
     portfolio: '',
-    jobType: '',
-    relocate: '',
+    jobType: 'Full-Time',
+    relocate: 'YES',
   });
 
   const handleChange = (e) => {

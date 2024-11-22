@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom'; // Import NavLink
 import '../css/Login.css'; // Assuming you have a CSS file for styling
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // For eye icons (using react-icons)
+import "../godfather_css/style.css";
 import axios from 'axios';
-
 const BusinessLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,11 +35,15 @@ const BusinessLogin = () => {
   };
 
   // Toggle password visibility
+  
+
+  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
+    <div className="centered-form">
     <div className="login-container">
       <h2>Business Login</h2>
       <form id="loginForm" onSubmit={handleSubmit}>
@@ -82,6 +86,7 @@ const BusinessLogin = () => {
           Not registered? Sign up here
         </NavLink>
       </form>
+    </div>
     </div>
   );
 };

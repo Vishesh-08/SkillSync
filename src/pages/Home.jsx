@@ -8,6 +8,7 @@ import happy_boss from "../img/happy boss.jpg";
 import happy_emp from "../img/happy employee.jpg";
 import "../css/Home.css"
 import { NavLink } from 'react-router-dom';
+import "../godfather_css/style.css";
 
 // Carousel Component
 const Home = () => {
@@ -89,38 +90,57 @@ const Home = () => {
       </Slider>
 
       {/* Search Section */}
-      <div className="container-fluid bg-primary mb-5 wow fadeIn" data-wow-delay="0.1s" style={{ padding: '35px' }}>
-        <div className="container">
-          <div className="row g-2">
-            <div className="col-md-10">
-              <div className="row g-2">
-                <div className="col-md-4">
-                  <input type="text" className="form-control border-0" placeholder="Keyword" />
-                </div>
-                <div className="col-md-4">
-                  <select className="form-select border-0">
-                    <option selected>Category</option>
-                    <option value="1">Category 1</option>
-                    <option value="2">Category 2</option>
-                    <option value="3">Category 3</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <select className="form-select border-0">
-                    <option selected>Location</option>
-                    <option value="1">Location 1</option>
-                    <option value="2">Location 2</option>
-                    <option value="3">Location 3</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-2">
-              <button className="btn btn-dark border-0 w-100">Search</button>
-            </div>
+      <div
+  className="container-fluid bg-primary mb-5 wow fadeIn"
+  data-wow-delay="0.1s"
+  style={{ padding: "35px" }} // Inline styles in JSX use a JavaScript object
+>
+  <div className="container">
+    <div className="row g-2">
+      <div className="col-md-10">
+        <div className="row g-2">
+        <div className="col-md-4">
+            <select className="form-select border-0">
+              {/* Removed "selected" attribute and replaced it with "defaultValue" */}
+              <option value="" disabled>
+                Category
+              </option>
+              <option value="1">Category 1</option>
+              <option value="2">Category 2</option>
+              <option value="3">Category 3</option>
+            </select>
+          </div>
+          <div className="col-md-4">
+            <select className="form-select border-0">
+              {/* Removed "selected" attribute and replaced it with "defaultValue" */}
+              <option value="" disabled>
+                Category
+              </option>
+              <option value="1">Category 1</option>
+              <option value="2">Category 2</option>
+              <option value="3">Category 3</option>
+            </select>
+          </div>
+          <div className="col-md-4">
+            <select className="form-select border-0">
+              {/* Removed "selected" attribute and replaced it with "defaultValue" */}
+              <option value="" disabled>
+                Location
+              </option>
+              <option value="1">Location 1</option>
+              <option value="2">Location 2</option>
+              <option value="3">Location 3</option>
+            </select>
           </div>
         </div>
       </div>
+      <div className="col-md-2" style={{ marginTop: '13px' }}>
+        <button className="btn btn-dark border-0 w-100">Search</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       {/* Category Section */}
       <div className="container-xxl py-5">
@@ -186,6 +206,8 @@ const Home = () => {
           </div>
         </div>
       </div>
+        
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import axios from 'axios'
 
 const CompanyRegistration = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -29,11 +30,47 @@ const CompanyRegistration = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic
-        console.log('Form submitted', formData);
+
+        if (formData.password !== formData.confirmPassword) {
+            alert("Passwords do not match. Please try again.");
+            return;
+        }
+
+        const formDataToSubmit = new FormData();
+
+        // Append regular fields
+        Object.keys(formData).forEach((key) => {
+            if (key !== "companyLogo" && key !== "verificationDocuments") {
+                formDataToSubmit.append(key, formData[key]);
+            }
+        });
+
+        // Append files
+        if (formData.companyLogo) {
+            
+            formDataToSubmit.append("companyLogo", formData.companyLogo);
+        }
+        if (formData.verificationDocuments) {
+            formDataToSubmit.append("verificationDocuments", formData.verificationDocuments);
+        }
+
+        try {
+            const response = await axios.post("http://localhost:5000/api/companies/register", formDataToSubmit, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            console.log("Company registered successfully:", response.data);
+        } catch (error) {
+            console.error("Error during registration:", error);
+            alert("Error during registration. Please try again.");
+        }
     };
+
+
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);

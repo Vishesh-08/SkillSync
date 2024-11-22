@@ -31,7 +31,7 @@ select {
     color: #666;
 }
 .skills-dropdown {
-    display: none;
+    display: block;
     position: absolute;
     top: 100%;
     left: 0;

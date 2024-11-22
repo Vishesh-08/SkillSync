@@ -127,3 +127,11 @@
     transform: translateY(-50%); /* Center vertically */
     cursor: pointer;
 }
+
+.centered-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    background-color: #f8f9fa; /* Optional background color */
+  }

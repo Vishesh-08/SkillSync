@@ -60,7 +60,7 @@ const companyRegister=async (req, res) => {
       });
   
       await newCompany.save();
-      res.status(201).json({ message: "Company registered successfully", company: newCompany });
+      res.status(201).json({ message: "Company registered successfully"});
     } catch (error) {
       console.error("Error registering company:", error);
       res.status(500).json({ error: "Error registering company" });

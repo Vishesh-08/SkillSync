@@ -17,6 +17,8 @@ const StudentLogin = () => {
         const response = await axios.post("http://localhost:5000/api/students/login", {
           email,
           password,
+        },{
+          withCredentials: true,
         });
 
         if (response.status === 200) {

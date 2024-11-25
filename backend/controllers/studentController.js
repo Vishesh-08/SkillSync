@@ -92,25 +92,29 @@ const loginStudent = async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Return success response
-    res.status(200).json({
-      message: "Login successful",
-      student: {
-        fullName: student.fullName,
-        email: student.email,
-        location: student.location,
-        university: student.university,
-        degree: student.degree,
-        gradDate: student.gradDate,
-        gpa: student.gpa,
-        jobType: student.jobType,
-        skills: student.skills,
-      },
-    });
+    // Respond with success
+    return res
+      .cookie("authToken", "some-auth-token", { httpOnly: true })
+      .status(200)
+      .json({
+        message: "Login successful",
+        student: {
+          fullName: student.fullName,
+          email: student.email,
+          location: student.location,
+          university: student.university,
+          degree: student.degree,
+          gradDate: student.gradDate,
+          gpa: student.gpa,
+          jobType: student.jobType,
+          skills: student.skills,
+        },
+      });
   } catch (error) {
     console.error("Error during login:", error);
-    res.status(500).json({ error: "An error occurred during login" });
+    return res.status(500).json({ error: "An error occurred during login" });
   }
 };
+
 
 module.exports = { registerStudent, loginStudent };

@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "your_jwt_secret_key";
+const JWT_SECRET = "your_jwt_secret_key_for_student";
 
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.authToken; 
 
     if (!token) {
-        return res.status(401).json({ error: "Access denied. No token provided." });
+        res.redirect("/studentlogin");
     }
 
     try {

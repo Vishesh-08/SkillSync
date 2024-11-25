@@ -4,12 +4,14 @@ import "../godfather_css/style.css";
 import { cities } from './cities';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const StudentRegistration = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate=useNavigate()
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -150,11 +152,13 @@ const StudentRegistration = () => {
         },
       });
   
-      if (response.status === 201) {
-        alert("Registration successful!");
-      } else {
-        alert("Something went wrong. Please try again.");
-      }
+      if(response.status==201){
+        alert("registration successfull ")
+        navigate("/studentlogin")
+    }
+    else{
+        throw error("failed to register");
+    }
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
       alert("Error: " + (error.response?.data?.message));

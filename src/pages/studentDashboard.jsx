@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { UserDetailsContext } from '../contexts/UserContext'; // Ensure correct import path
+import '../css/Dashboard.css';
 
 const UserDashboard = () => {
   const { userDetails } = useContext(UserDetailsContext); // Access user details from Context

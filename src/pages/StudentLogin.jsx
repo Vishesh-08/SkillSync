@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../css/Login.css'; // Assuming you have a CSS file for styling
 import axios from 'axios';
-import { UserDetailsContext } from '../contexts/UserContext';
+import {useUserDetails} from '../contexts/UserContext';
 
 const StudentLogin = () => {
   const navigate = useNavigate(); // Correct placement of useNavigate
@@ -11,7 +11,7 @@ const StudentLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state to prevent multiple submissions
-  const { setUserDetails } = useContext(UserDetailsContext); 
+  const { userDetails, updateUserDetail,setUserDetails } = useUserDetails();
 
   // Handle form submission
   const handleSubmit = async (e) => {

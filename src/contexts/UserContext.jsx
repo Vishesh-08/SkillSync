@@ -53,7 +53,7 @@ export const UserDetailsProvider = ({ children }) => {
     }, [userDetails]);
 
     return (
-        <UserDetailsContext.Provider value={{ userDetails, updateUserDetail, resetUserDetails }}>
+        <UserDetailsContext.Provider value={{ userDetails, updateUserDetail, resetUserDetails,setUserDetails }}>
             {children}
         </UserDetailsContext.Provider>
     );

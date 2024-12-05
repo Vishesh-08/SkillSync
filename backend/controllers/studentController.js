@@ -1,4 +1,6 @@
 const Student = require("../models/Student");
+const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
 // Register student
 const registerStudent = async (req, res) => {
@@ -83,38 +85,48 @@ const loginStudent = async (req, res) => {
 
     // Find the student by email
     const student = await Student.findOne({ email });
-    if (!student) {
+    if (!student || student.password !== password) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Check if the plain password matches the stored one
-    if (student.password !== password) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
+    // Generate a token
+    const token = jwt.sign({ email: student.email, id: student._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    // Respond with success
+    // Format the response
+    const studentResponse = {
+      fullName: student.fullName,
+      email: student.email,
+      phone: student.phone,
+      dob: student.dob,
+      location: student.location,
+      university: student.university,
+      degree: student.degree,
+      gradDate: student.gradDate,
+      gpa: student.gpa,
+      jobType: student.jobType,
+      relocate: student.relocate,
+      resume: student.resume,
+      skills: student.skills,
+    };
+
+    // Respond with the token and formatted student object
     return res
-      .cookie("authToken", "some-auth-token", { httpOnly: true })
+      .cookie("authToken", token, {
+        httpOnly: true,
+        sameSite: "Strict",
+      })
       .status(200)
       .json({
         message: "Login successful",
-        student: {
-          fullName: student.fullName,
-          email: student.email,
-          location: student.location,
-          university: student.university,
-          degree: student.degree,
-          gradDate: student.gradDate,
-          gpa: student.gpa,
-          jobType: student.jobType,
-          skills: student.skills,
-        },
+        redirect: "/dashboard",
+        student: studentResponse,
       });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ error: "An error occurred during login" });
   }
 };
-
 
 module.exports = { registerStudent, loginStudent };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom'; // Import NavLink
+import { NavLink ,useNavigate} from 'react-router-dom'; // Import NavLink
 import '../css/Login.css'; // Assuming you have a CSS file for styling
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // For eye icons (using react-icons)
 import "../godfather_css/style.css";
@@ -8,6 +8,7 @@ const BusinessLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate=useNavigate();
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -17,11 +18,13 @@ const BusinessLogin = () => {
         const response = await axios.post("http://localhost:5000/api/companies/login", {
           email,
           password,
-        });
+        },{withCredentials:true});
 
         if (response.status == 201) {
-          console.log(response.data);
+          navigate(response.data.redirect);
+          console.log(response.cookie)
           alert("Login successful");
+
         } else {
           alert("Something went wrong!");
         }

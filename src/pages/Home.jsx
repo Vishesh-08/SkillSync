@@ -2,17 +2,18 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import 'animate.css'; // Ensure animate.css is imported
-import WOW from 'wow.js'; // Import WOW.js for animation
+import 'animate.css';
+import WOW from 'wow.js';
 import happy_boss from "../img/happy boss.jpg";
 import happy_emp from "../img/happy employee.jpg";
-import "../css/Home.css"
-import { NavLink } from 'react-router-dom';
+import "../css/Home.css";
+import { NavLink, useNavigate } from 'react-router-dom';
 import "../godfather_css/style.css";
+import axios from 'axios';
 
-// Carousel Component
 const Home = () => {
-  
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     new WOW().init();
   }, []);
@@ -27,11 +28,47 @@ const Home = () => {
     autoplaySpeed: 3000,
   };
 
+  const checkLoginStatusStudent = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/students/login',{}, {
+        withCredentials: true,
+      });
+      if(response.data.redirect){
+        
+        navigate(response.data.redirect)
+      }
+
+      
+    } catch (error) {
+      
+        navigate(error.response.data.redirect || "/studentlogin");
+      
+  };}
+
+  const checkLoginStatusCompany = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/companies/login',{}, {
+        withCredentials: true,
+      });
+      console.log(response?.cookie)
+      
+      if(response.data.redirect){
+        
+        navigate(response.data.redirect);
+      }
+
+      
+    } catch (error) {
+      
+        navigate(error.response.data.redirect || "/businesslogin");
+      
+  };}
+  
+
   return (
     <div className="container-fluid p-0">
       {/* Carousel Section */}
       <Slider {...settings} className="header-carousel position-relative">
-        {/* Carousel Item 1 */}
         <div className="owl-carousel-item position-relative">
           <img className="img-fluid" src={happy_boss} alt="Happy Employee" />
           <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style={{ background: 'rgba(43, 57, 64, .5)' }}>
@@ -39,27 +76,19 @@ const Home = () => {
               <div className="row justify-content-start">
                 <div className="col-10 col-lg-8">
                   <h1 className="display-3 text-white animated slideInDown mb-4">Where Talent Meets Opportunity</h1>
-                  <p className="fs-5 fw-medium text-white mb-4 pb-2">
-                    Connecting job seekers with roles that inspire and empower them to grow and succeed. Your dream career starts here.
-                  </p>
-                  <NavLink
-        to="/studentlogin"
-        className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
-      >
-        Search A Job
-      </NavLink>
-      <NavLink
-        to="/businesslogin"
-        className="btn btn-secondary py-md-3 px-md-5 animated slideInRight"
-      >
-        Find A Talent
-      </NavLink></div>
+                  <p className="fs-5 fw-medium text-white mb-4 pb-2">Connecting job seekers with roles that inspire and empower them to grow and succeed. Your dream career starts here.</p>
+                  <button onClick={checkLoginStatusStudent} className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
+                    Search A Job
+                  </button>
+                  <button onClick={checkLoginStatusCompany} className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
+                    Find A Talent
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Carousel Item 2 */}
         <div className="owl-carousel-item position-relative">
           <img className="img-fluid" src={happy_emp} alt="Happy Boss" />
           <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style={{ background: 'rgba(43, 57, 64, .5)' }}>
@@ -67,21 +96,13 @@ const Home = () => {
               <div className="row justify-content-start">
                 <div className="col-10 col-lg-8">
                   <h1 className="display-3 text-white animated slideInDown mb-4">Discover Talent That Drives Success</h1>
-                  <p className="fs-5 fw-medium text-white mb-4 pb-2">
-                    Find top candidates who align with your vision and elevate your business to new heights.
-                  </p>
-                  <NavLink
-        to="/login"
-        className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
-      >
-        Search A Job
-      </NavLink>
-      <NavLink
-        to="/businesslogin"
-        className="btn btn-secondary py-md-3 px-md-5 animated slideInRight"
-      >
-        Find A Talent
-      </NavLink>
+                  <p className="fs-5 fw-medium text-white mb-4 pb-2">Find top candidates who align with your vision and elevate your business to new heights.</p>
+                  <button onClick={checkLoginStatusStudent} className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
+                    Search A Job
+                  </button>
+                  <button onClick={checkLoginStatusCompany} className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
+                    Find A Talent
+                  </button>
                 </div>
               </div>
             </div>
@@ -90,60 +111,46 @@ const Home = () => {
       </Slider>
 
       {/* Search Section */}
-      <div
-  className="container-fluid bg-primary mb-5 wow fadeIn"
-  data-wow-delay="0.1s"
-  style={{ padding: "35px" }} // Inline styles in JSX use a JavaScript object
->
-  <div className="container">
-    <div className="row g-2">
-      <div className="col-md-10">
-        <div className="row g-2">
-        <div className="col-md-4">
-            <select className="form-select border-0">
-              {/* Removed "selected" attribute and replaced it with "defaultValue" */}
-              <option value="" disabled>
-                Category
-              </option>
-              <option value="1">Category 1</option>
-              <option value="2">Category 2</option>
-              <option value="3">Category 3</option>
-            </select>
-          </div>
-          <div className="col-md-4">
-            <select className="form-select border-0">
-              {/* Removed "selected" attribute and replaced it with "defaultValue" */}
-              <option value="" disabled>
-                Category
-              </option>
-              <option value="1">Category 1</option>
-              <option value="2">Category 2</option>
-              <option value="3">Category 3</option>
-            </select>
-          </div>
-          <div className="col-md-4">
-            <select className="form-select border-0">
-              {/* Removed "selected" attribute and replaced it with "defaultValue" */}
-              <option value="" disabled>
-                Location
-              </option>
-              <option value="1">Location 1</option>
-              <option value="2">Location 2</option>
-              <option value="3">Location 3</option>
-            </select>
+      <div className="container-fluid bg-primary mb-5 wow fadeIn" data-wow-delay="0.1s" style={{ padding: "35px" }}>
+        <div className="container">
+          <div className="row g-2">
+            <div className="col-md-10">
+              <div className="row g-2">
+                <div className="col-md-4">
+                  <select className="form-select border-0">
+                    <option value="" disabled>Category</option>
+                    <option value="1">Category 1</option>
+                    <option value="2">Category 2</option>
+                    <option value="3">Category 3</option>
+                  </select>
+                </div>
+                <div className="col-md-4">
+                  <select className="form-select border-0">
+                    <option value="" disabled>Category</option>
+                    <option value="1">Category 1</option>
+                    <option value="2">Category 2</option>
+                    <option value="3">Category 3</option>
+                  </select>
+                </div>
+                <div className="col-md-4">
+                  <select className="form-select border-0">
+                    <option value="" disabled>Location</option>
+                    <option value="1">Location 1</option>
+                    <option value="2">Location 2</option>
+                    <option value="3">Location 3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-2" style={{ marginTop: '13px' }}>
+              <button className="btn btn-dark border-0 w-100">Search</button>
+            </div>
           </div>
         </div>
       </div>
-      <div className="col-md-2" style={{ marginTop: '13px' }}>
-        <button className="btn btn-dark border-0 w-100">Search</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-
-      {/* Category Section */}
-      <div className="container-xxl py-5">
+     {/* Category Section */}
+     <div className="container-xxl py-5">
         <div className="container">
           <h1 className="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Explore By Category</h1>
           <div className="row g-4">
@@ -207,7 +214,10 @@ const Home = () => {
         </div>
       </div>
         
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+      <a href="#" className="btn btn-lg btn-primary btn-lg-square back-to-top">
+        <i className="bi bi-arrow-up"></i>
+      </a>
     </div>
   );
 };

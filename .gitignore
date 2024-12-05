@@ -12,6 +12,7 @@ dist
 dist-ssr
 CompanyUploads
 uploads
+.env
 *.local
 
 # Editor directories and files

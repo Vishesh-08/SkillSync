@@ -49,8 +49,8 @@ const Footer = () => {
                 <div className="copyright">
                     <div className="row">
                         <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                            &copy; <a className="border-bottom" href="https://freewebsitecode.com">Your Site Name</a>, All Right Reserved. 
-                            Designed By <a className="border-bottom" href="https://freewebsitecode.com">Free Website Code</a>
+                            &copy; <a className="border-bottom" href="#">SkillSync</a>, All Right Reserved. 
+                            Designed By <a className="border-bottom" href="#">Team SkillSync</a>
                         </div>
                         <div className="col-md-6 text-center text-md-end">
                             <div className="footer-menu">

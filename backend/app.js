@@ -5,6 +5,7 @@ const cors = require('cors');
 const studentRoutes = require('./routes/studentRoutes');
 const companyRoutes=require("./routes/companyRoutes")
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
 const app = express();
 app.use(express.json()); // For JSON bodies
@@ -18,8 +19,10 @@ app.use(cookieParser());
 
 
 app.use(bodyParser.json());
+const dbUrl = 'mongodb://localhost:27017/SKILLSYNC';
+console.log(process.env.DB_URL);
 
-mongoose.connect('mongodb://localhost:27017/SKILLSYNC', {
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }).then(() => {
@@ -33,6 +36,7 @@ mongoose.connect('mongodb://localhost:27017/SKILLSYNC', {
 // Routes
 app.use('/api/students', studentRoutes);
 app.use('/api/companies', companyRoutes);
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;

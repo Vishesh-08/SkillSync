@@ -1,7 +1,8 @@
 const Company=require("../models/company");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "your_jwt_secret_key"; 
+
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 const companyRegister=async (req, res) => {
     try {
       const {
@@ -69,6 +70,18 @@ const companyRegister=async (req, res) => {
 
 
   const companyLogin = async (req, res) => {
+    const token = req.cookies?.companyAuthToken;
+
+  // If token exists, validate it and redirect to dashboard
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_COMPANY);
+      return res.status(302).json({ redirect: "/bussinessdashboard" }); // Already logged in, redirect to dashboard
+    } catch (error) {
+      console.log("Invalid token. Proceeding to login.");
+      // Continue with login process if token is invalid
+    }
+  }
     try {
         const { email, password } = req.body;
 
@@ -91,20 +104,20 @@ const companyRegister=async (req, res) => {
         // Generate a JWT
         const token = jwt.sign(
             { id: newCompany._id, email: newCompany.email },
-            JWT_SECRET,
+            process.env.JWT_SECRET_COMPANY,
             { expiresIn: "1h" } // Token expiration time
         );
 
         // Set the JWT in an HTTP-only cookie
-        
+        console.log("api hit");
 
       
-        res.cookie("authToken", token, {
+        res.cookie("companyAuthToken", token, {
           httpOnly: true, // Prevent access from client-side JavaScript
           secure: process.env.NODE_ENV === "production", // Use secure cookies in production
           maxAge: 3600000, // 1 hour in milliseconds
           sameSite: "strict", // Prevent CSRF attacks
-      }).status(201).json({ message: "Login successful" });
+      }).status(201).json({ message: "Login successful", redirect: "/bussinessdashboard" });
     } catch (error) {
         res.status(500).json({ error: `An error occurred: ${error.message}` });
     }

@@ -14,6 +14,7 @@ import BusinessLogin from "./pages/BLogin"
 import "./css/App.css"
 import Businessregister from "./pages/CompanyRegister"
 import StudentRegistration from './pages/StudentRegister';
+import Dashboard from "./pages/studentDashboard"
 
 const App = () => {
     return (
@@ -28,6 +29,8 @@ const App = () => {
             <Route path="/studentregister" element={<StudentRegistration/>}/>
             <Route path="/businesslogin" element={<BusinessLogin/>}/>
             <Route path="/businessregister" element={<Businessregister/>}/>
+            <Route path="/dashboard" element={<Dashboard/>}/>
+            
             
                 
                 

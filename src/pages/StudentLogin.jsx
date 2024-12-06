@@ -1,50 +1,54 @@
-import React, { useState ,useContext} from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../css/Login.css'; // Assuming you have a CSS file for styling
 import axios from 'axios';
-import {useUserDetails} from '../contexts/UserContext';
+import { useUserDetails } from '../contexts/UserContext';
 
 const StudentLogin = () => {
-  const navigate = useNavigate(); // Correct placement of useNavigate
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state to prevent multiple submissions
-  const { userDetails, updateUserDetail,setUserDetails } = useUserDetails();
+  const [loading, setLoading] = useState(false);
+  const { userDetails, updateUserDetail, setUserDetails } = useUserDetails();
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email && password) {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const response = await axios.post(
           'http://localhost:5000/api/students/login',
           { email, password },
-          { withCredentials: true } // Ensure cookies are sent with the request
+          { withCredentials: true }
         );
 
-        // Handle successful login
         if (response.status === 200) {
           alert('Login successful');
-          console.log(response.data.student);
+          console.log(response.data.token);
+          // Store the token directly as a string
+          localStorage.setItem('authToken', response.data.token);
           setUserDetails(response.data.student);
 
-          navigate(response.data.redirect || '/dashboard'); // Redirect based on the server response
+          // Clear the form fields
+          setEmail('');
+          setPassword('');
+
+          // Redirect user to dashboard or the specified redirect URL
+          navigate(response.data.redirect || '/dashboard');
         }
       } catch (error) {
-        console.error('Error during login:',error.message|| error.response?.data  );
+        console.error('Error during login:', error.message || error.response?.data);
         alert(error.response?.data?.error || 'An error occurred. Please try again.');
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     } else {
       alert("Both fields are required");
     }
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

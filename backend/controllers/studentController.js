@@ -113,15 +113,12 @@ const loginStudent = async (req, res) => {
 
     // Respond with the token and formatted student object
     return res
-      .cookie("authToken", token, {
-        httpOnly: true,
-        sameSite: "Strict",
-      })
       .status(200)
       .json({
         message: "Login successful",
         redirect: "/dashboard",
         student: studentResponse,
+        token,
       });
   } catch (error) {
     console.error("Error during login:", error);

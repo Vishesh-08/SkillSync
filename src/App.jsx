@@ -15,6 +15,7 @@ import "./css/App.css"
 import Businessregister from "./pages/CompanyRegister"
 import StudentRegistration from './pages/StudentRegister';
 import Dashboard from "./pages/studentDashboard"
+import ProtectedRoute from './components/protected_route';
 
 const App = () => {
     return (
@@ -29,7 +30,9 @@ const App = () => {
             <Route path="/studentregister" element={<StudentRegistration/>}/>
             <Route path="/businesslogin" element={<BusinessLogin/>}/>
             <Route path="/businessregister" element={<Businessregister/>}/>
-            <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/dashboard" element={<ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>}/>
             
             
                 

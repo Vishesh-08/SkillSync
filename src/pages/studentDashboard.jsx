@@ -1,19 +1,19 @@
 import React, { useContext } from 'react';
-import { UserDetailsContext } from '../contexts/UserContext'; // Ensure correct import path
+import { useUserDetails } from '../contexts/UserContext'; // Ensure correct import path
 import '../css/Dashboard.css';
 
 const UserDashboard = () => {
-  const { userDetails } = useContext(UserDetailsContext); // Access user details from Context
+  const { userDetails } =useUserDetails(); // Access user details from Context
 
   // Handle loading or missing user data
   if (!userDetails) {
     return <div>Loading user details...</div>;
   }
-
+  console.log(userDetails);
   return (
     <div className="bg-gradient-to-r from-gray-100 via-blue-50 to-blue-50 min-h-screen flex flex-col items-center font-inter">
       <header className="bg-blue-700 text-white text-center py-8 w-full shadow-lg">
-        <h1 className="text-3xl font-extrabold tracking-wide">Welcome, {userDetails?.name || 'Student'}</h1>
+        <h1 className="text-3xl font-extrabold tracking-wide">Welcome, {userDetails?.fullName || 'Student'}</h1>
       </header>
 
       <div className="flex w-11/12 max-w-6xl mx-auto mt-8 items-start gap-8">
@@ -50,15 +50,15 @@ const UserDashboard = () => {
                 className="h-36 w-36 rounded-full border-4 border-blue-300 shadow-lg transform transition-transform hover:scale-105"
               />
               <div className="grid grid-cols-2 gap-y-4 gap-x-10 text-gray-700 text-lg">
-                <p><strong>Email:</strong> {userDetails?.profile?.details?.Email || 'N/A'}</p>
-                <p><strong>Phone:</strong> {userDetails?.profile?.details?.Phone || 'N/A'}</p>
-                <p><strong>Date of Birth:</strong> {userDetails?.profile?.details?.["Date of Birth"] || 'N/A'}</p>
-                <p><strong>Location:</strong> {userDetails?.profile?.details?.Location || 'N/A'}</p>
-                <p><strong>University:</strong> {userDetails?.profile?.details?.University || 'N/A'}</p>
-                <p><strong>Degree Program:</strong> {userDetails?.profile?.details?.["Degree Program"] || 'N/A'}</p>
-                <p><strong>Year of Study:</strong> {userDetails?.profile?.details?.["Year of Study"] || 'N/A'}</p>
-                <p><strong>Graduation:</strong> {userDetails?.profile?.details?.Graduation || 'N/A'}</p>
-                <p><strong>GPA:</strong> {userDetails?.profile?.details?.GPA || 'N/A'}</p>
+                <p><strong>Email:</strong> {userDetails?.email || 'N/A'}</p>
+                <p><strong>Phone:</strong> {userDetails?.phone || 'N/A'}</p>
+                <p><strong>Date of Birth:</strong> {userDetails?.dob || 'N/A'}</p>
+                <p><strong>Location:</strong> {userDetails?.location || 'N/A'}</p>
+                <p><strong>University:</strong> {userDetails?.university || 'N/A'}</p>
+                <p><strong>Degree Program:</strong> {userDetails?.degree || 'N/A'}</p>
+                <p><strong>Year of Study:</strong> {userDetails?.yos || 'N/A'}</p>
+                <p><strong>Graduation:</strong> {userDetails?.gradDate || 'N/A'}</p>
+                <p><strong>GPA:</strong> {userDetails?.gpa || 'N/A'}</p>
               </div>
             </div>
           </section>

@@ -11,8 +11,10 @@ const app = express();
 app.use(express.json()); // For JSON bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: "http://localhost:5173", // Your frontend URL
-  credentials: true, // Allows cookies to be sent
+  origin: "http://localhost:5173", // Frontend URL
+  credentials: true, // Allow cookies and authorization headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 }));
 
 app.use(cookieParser());

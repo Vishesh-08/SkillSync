@@ -2,23 +2,51 @@ import React, { useContext } from 'react';
 import { UserDetailsContext } from '../contexts/UserContext'; // Ensure correct import path
 import '../css/Dashboard.css';
 
-const UserDashboard = () => {
-  const { userDetails } = useContext(UserDetailsContext); // Access user details from Context
+const StudentDashboard = () => {
+  // const { userDetails } = useContext(UserDetailsContext);
 
-  // Handle loading or missing user data
-  if (!userDetails) {
-    return <div>Loading user details...</div>;
-  }
+  // if (!userDetails) {
+  //   return <div>Loading user details...</div>;
+  // }
+
+  const userDetails = {
+    name: "John Doe",
+    profile: {
+      image: "dhruv.jpeg",
+      details: {
+        Email: "jane.doe@example.com",
+        Phone: "123-456-7890",
+        Date_of_Birth: "01/01/2000",
+        Location: "New York",
+        University: "Harvard University",
+        "Degree Program": "Computer Science",
+        "Year of Study": "Senior",
+        Graduation: "June 2024",
+        GPA: "3.9",
+      },
+    },
+    skills: ["Java", "React.js", "Node.js", "MongoDB"],
+    certifications: ["Certified Java Developer", "AWS Certified Solutions Architect"],
+    portfolio: { link: "https://janedoeportfolio.com" },
+    socialLinks: [
+      { platform: "LinkedIn", url: "https://linkedin.com/in/janedoe", iconClass: "fa-linkedin", color: "#0077b5" },
+      { platform: "Twitter", url: "https://twitter.com/janedoe", iconClass: "fa-twitter", color: "#1DA1F2" },
+      { platform: "GitHub", url: "https://github.com/janedoe", iconClass: "fa-github", color: "#333" },
+    ],
+    jobPreferences: ["Full-time", "Remote", "Hybrid"],
+  };
 
   return (
-    <div className="bg-gradient-to-r from-gray-100 via-blue-50 to-blue-50 min-h-screen flex flex-col items-center font-inter">
-      <header className="bg-blue-700 text-white text-center py-8 w-full shadow-lg">
-        <h1 className="text-3xl font-extrabold tracking-wide">Welcome, {userDetails?.name || 'Student'}</h1>
+    <div className="dashboard-container">
+      {/* Header */}
+      <header className="dashboard-header">
+        <h1>Welcome, {userDetails?.name || 'Student'}</h1>
       </header>
 
-      <div className="flex w-11/12 max-w-6xl mx-auto mt-8 items-start gap-8">
-        <nav className="bg-blue-700 text-white rounded-lg p-6 w-full lg:w-64 shadow-xl flex-shrink-0">
-          <ul className="space-y-6">
+      <div className="dashboard-content">
+        {/* Navigation */}
+        <nav className="dashboard-nav">
+          <ul>
             {[
               { href: '#profile', label: 'Profile', icon: '👤' },
               { href: '#skills', label: 'Skills', icon: '🛠️' },
@@ -28,10 +56,7 @@ const UserDashboard = () => {
               { href: '#job-preferences', label: 'Job Preferences', icon: '🏢' },
             ].map((item) => (
               <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="flex items-center space-x-2 py-3 px-4 rounded-lg hover:bg-blue-500 transform transition-transform hover:scale-105 text-lg font-semibold"
-                >
+                <a href={item.href}>
                   <span>{item.icon}</span>
                   <span>{item.label}</span>
                 </a>
@@ -40,59 +65,55 @@ const UserDashboard = () => {
           </ul>
         </nav>
 
-        <div className="bg-white flex-1 rounded-lg shadow-xl p-8 animate-fadeIn">
-          <section id="profile" className="mb-10">
-            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Profile</h2>
-            <div className="flex items-center gap-10">
+        {/* Main Content */}
+        <div className="dashboard-main">
+          {/* Profile Section */}
+          <section id="profile" className="section">
+            <h2>Profile</h2>
+            <div className="flex-center-gap">
               <img
                 src={userDetails?.profile?.image || '/default-profile.png'}
                 alt="Profile"
-                className="h-36 w-36 rounded-full border-4 border-blue-300 shadow-lg transform transition-transform hover:scale-105"
+                className="profile-image"
               />
-              <div className="grid grid-cols-2 gap-y-4 gap-x-10 text-gray-700 text-lg">
-                <p><strong>Email:</strong> {userDetails?.profile?.details?.Email || 'N/A'}</p>
-                <p><strong>Phone:</strong> {userDetails?.profile?.details?.Phone || 'N/A'}</p>
-                <p><strong>Date of Birth:</strong> {userDetails?.profile?.details?.["Date of Birth"] || 'N/A'}</p>
-                <p><strong>Location:</strong> {userDetails?.profile?.details?.Location || 'N/A'}</p>
-                <p><strong>University:</strong> {userDetails?.profile?.details?.University || 'N/A'}</p>
-                <p><strong>Degree Program:</strong> {userDetails?.profile?.details?.["Degree Program"] || 'N/A'}</p>
-                <p><strong>Year of Study:</strong> {userDetails?.profile?.details?.["Year of Study"] || 'N/A'}</p>
-                <p><strong>Graduation:</strong> {userDetails?.profile?.details?.Graduation || 'N/A'}</p>
-                <p><strong>GPA:</strong> {userDetails?.profile?.details?.GPA || 'N/A'}</p>
+              <div className="grid-two-column">
+                {Object.entries(userDetails.profile.details).map(([key, value]) => (
+                    <p key={key}>
+                      <strong>{key}:</strong> {value || 'N/A'}
+                    </p>
+                  ))}
               </div>
             </div>
           </section>
 
-          <section id="skills" className="mb-10">
-            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Skills</h2>
-            <div className="flex flex-wrap gap-6">
+          {/* Skills Section */}
+          <section id="skills" className="section">
+            <h2>Skills</h2>
+            <div className="flex-wrap-gap">
               {(userDetails?.skills || []).map((skill) => (
-                <span
-                  key={skill}
-                  className="bg-blue-100 text-blue-800 px-5 py-2 rounded-full shadow-md font-medium transform transition-transform hover:scale-105"
-                >
-                  {skill}
-                </span>
+                <span key={skill} className="badge">{skill}</span>
               ))}
             </div>
           </section>
 
-          <section id="certifications" className="mb-10">
-            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Certifications</h2>
-            <ul className="list-disc pl-6 text-gray-700 text-lg space-y-2">
+          {/* Certifications Section */}
+          <section id="certifications" className="section">
+            <h2>Certifications</h2>
+            <ul>
               {(userDetails?.certifications || []).map((certification) => (
-                <li key={certification}>{certification}</li>
+                <li key={certification} className="list-item">{certification}</li>
               ))}
             </ul>
           </section>
 
-          <section id="portfolio" className="mb-10">
-            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Portfolio</h2>
+          {/* Portfolio Section */}
+          <section id="portfolio" className="section">
+            <h2>Portfolio</h2>
             <p>
               <a
                 href={userDetails?.portfolio?.link || '#'}
                 target="_blank"
-                className="text-blue-500 underline hover:text-blue-700"
+                className="link"
                 rel="noopener noreferrer"
               >
                 {userDetails?.portfolio?.link || 'N/A'}
@@ -100,34 +121,31 @@ const UserDashboard = () => {
             </p>
           </section>
 
-          <section id="social-media" className="mb-10">
-            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Social Media</h2>
-            <div className="flex gap-6">
+          {/* Social Media Section */}
+          <section id="social-media" className="section">
+            <h2>Social Media</h2>
+            <div className="flex-gap">
               {(userDetails?.socialLinks || []).map((social) => (
                 <a
                   key={social.platform}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-2 hover:opacity-80 transition"
+                  className="flex items-center gap-2"
                 >
-                  <i className={`fab ${social.iconClass} text-2xl`} style={{ color: social.color }}></i>
-                  <span className="text-blue-700">{social.platform}</span>
+                  <i className={`fab ${social.iconClass} social-media-icon`} style={{ color: social.color }}></i>
+                  <span>{social.platform}</span>
                 </a>
               ))}
             </div>
           </section>
 
-          <section id="job-preferences">
-            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Job Preferences</h2>
-            <div className="flex flex-wrap gap-6">
+          {/* Job Preferences Section */}
+          <section id="job-preferences" className="section">
+            <h2>Job Preferences</h2>
+            <div className="flex-wrap-gap">
               {(userDetails?.jobPreferences || []).map((preference) => (
-                <span
-                  key={preference}
-                  className="bg-blue-100 text-blue-800 px-5 py-2 rounded-full shadow-md font-medium transform transition-transform hover:scale-105"
-                >
-                  {preference}
-                </span>
+                <span key={preference} className="badge">{preference}</span>
               ))}
             </div>
           </section>
@@ -137,4 +155,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default StudentDashboard;

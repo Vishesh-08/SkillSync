@@ -131,5 +131,36 @@ const loginStudent = async (req, res) => {
     return res.status(500).json({ error: "An error occurred during login" });
   }
 };
+const studentAuth= async (req,res)=>{
+  const email=req.user.email
+  const studentRecord=await Student.findOne({email});
+  const studentResponse = {
+    profile: {
+      fullName: studentRecord.fullName,
+      image: studentRecord.image,
+    },
+    details: {
+      email: studentRecord.email,
+      phone: studentRecord.phone,
+      dob: studentRecord.dob,
+      location: studentRecord.location,
+      university: studentRecord.university,
+      degree: studentRecord.degree,
+      gradDate: studentRecord.gradDate,
+      gpa: studentRecord.gpa,
+    },
+    skills: studentRecord.skills,
+    certifications: studentRecord.certifications||[],
+    portfolio: studentRecord.portfolio||[],
+    socialLinks: studentRecord.socialLinks||[],
+    jobPreferences: studentRecord.jobPreferences||[],
+  };
 
-module.exports = { registerStudent, loginStudent };
+  // Respond with the token and formatted student object
+  return res
+    .status(200)
+    .json({student: studentResponse});
+
+}
+
+module.exports = { registerStudent, loginStudent,studentAuth };

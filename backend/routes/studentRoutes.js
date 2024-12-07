@@ -21,11 +21,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const { registerStudent,loginStudent } = require("../controllers/studentController");
+const { registerStudent,loginStudent,studentAuth } = require("../controllers/studentController");
 
 router.post("/register", upload.single("resume"), registerStudent);
 
 router.post("/login",loginStudent);
+router.post("/auth",isAuthenticated,studentAuth);
 //router.post("profile",authenticateStudentToken,studentProfile)
 //TODO:student profile yet to be create!
 

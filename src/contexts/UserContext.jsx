@@ -6,20 +6,26 @@ export const UserDetailsContext = createContext();
 
 // Initial State
 const initialUserDetails = {
-    fullName: '',
-    email: '',
-    phone: '',
-    dob: '',
-    location: '',
-    university: '',
-    degree: '',
-    gradDate: '',
-    gpa: '',
-    jobType: '',
-    relocate: '',
-    resume: '',
+    profile: {
+      fullName: "",
+      image: "",
+    },
+    details: {
+      email: "",
+      phone: "",
+      dob: "",
+      location: "",
+      university: "",
+      degree: "",
+      gradDate: "",
+      gpa: "",
+    },
     skills: [],
-};
+    certifications: [],
+    portfolio: {},
+    socialLinks: [],
+    jobPreferences: [],
+  };
 
 // Provider Component
 export const UserDetailsProvider = ({ children }) => {

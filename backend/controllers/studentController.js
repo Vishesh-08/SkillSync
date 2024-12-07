@@ -96,19 +96,25 @@ const loginStudent = async (req, res) => {
 
     // Format the response
     const studentResponse = {
-      fullName: student.fullName,
-      email: student.email,
-      phone: student.phone,
-      dob: student.dob,
-      location: student.location,
-      university: student.university,
-      degree: student.degree,
-      gradDate: student.gradDate,
-      gpa: student.gpa,
-      jobType: student.jobType,
-      relocate: student.relocate,
-      resume: student.resume,
+      profile: {
+        fullName: student.fullName,
+        image: student.image,
+      },
+      details: {
+        email: student.email,
+        phone: student.phone,
+        dob: student.dob,
+        location: student.location,
+        university: student.university,
+        degree: student.degree,
+        gradDate: student.gradDate,
+        gpa: student.gpa,
+      },
       skills: student.skills,
+      certifications: student.certifications||[],
+      portfolio: student.portfolio||[],
+      socialLinks: student.socialLinks||[],
+      jobPreferences: student.jobPreferences||[],
     };
 
     // Respond with the token and formatted student object

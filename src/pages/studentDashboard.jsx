@@ -36,27 +36,31 @@ const StudentDashboard = () => {
     jobPreferences: ["Full-time", "Remote", "Hybrid"],
   };*/
 
-  return (
-    <div className="dashboard-container">
+  return(
+    <div className="bg-gradient-to-r from-gray-100 via-blue-50 to-blue-50 min-h-screen flex flex-col items-center font-inter">
       {/* Header */}
-      <header className="dashboard-header">
-        <h1>Welcome, {userDetails?.fullName || 'Student'}</h1>
+      <header className="bg-blue-700 text-white text-center py-8 w-full shadow-lg">
+        <h1 className="text-3xl font-extrabold tracking-wide">Welcome, {userDetails.fullName}</h1>
       </header>
 
-      <div className="dashboard-content">
-        {/* Navigation */}
-        <nav className="dashboard-nav">
-          <ul>
+      {/* Body Container */}
+      <div className="flex w-11/12 max-w-6xl mx-auto mt-8 items-start gap-8">
+        {/* Sidebar */}
+        <nav className="bg-blue-700 text-white rounded-lg p-6 w-full lg:w-64 shadow-xl flex-shrink-0">
+          <ul className="space-y-6">
             {[
-              { href: '#profile', label: 'Profile', icon: '👤' },
-              { href: '#skills', label: 'Skills', icon: '🛠️' },
-              { href: '#certifications', label: 'Certifications', icon: '📜' },
-              { href: '#portfolio', label: 'Portfolio', icon: '📁' },
-              { href: '#social-media', label: 'Social Media', icon: '🌐' },
-              { href: '#job-preferences', label: 'Job Preferences', icon: '🏢' },
+              { href: "#profile", label: "Profile", icon: "👤" },
+              { href: "#skills", label: "Skills", icon: "🛠️" },
+              { href: "#certifications", label: "Certifications", icon: "📜" },
+              { href: "#portfolio", label: "Portfolio", icon: "📁" },
+              { href: "#social-media", label: "Social Media", icon: "🌐" },
+              { href: "#job-preferences", label: "Job Preferences", icon: "🏢" },
             ].map((item) => (
               <li key={item.href}>
-                <a href={item.href}>
+                <a
+                  href={item.href}
+                  className="flex items-center space-x-2 py-3 px-4 rounded-lg hover:bg-blue-500 transform transition-transform hover:scale-105 text-lg font-semibold"
+                >
                   <span>{item.icon}</span>
                   <span>{item.label}</span>
                 </a>
@@ -66,107 +70,96 @@ const StudentDashboard = () => {
         </nav>
 
         {/* Main Content */}
-        <div className="dashboard-main">
+        <div className="bg-white flex-1 rounded-lg shadow-xl p-8 animate-fadeIn">
           {/* Profile Section */}
-          <section id="profile" className="section">
-            <h2>Profile</h2>
-            <div className="flex-center-gap">
+          <section id="profile" className="mb-10">
+            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Profile</h2>
+            <div className="flex items-center gap-10">
               <img
-                src={userDetails?.image || '/default-profile.png'}
-                alt="Profile"
-                className="profile-image"
+                src={userDetails.profile?.image}
+                alt="Profile Picture"
+                className="h-36 w-36 rounded-full border-4 border-blue-300 shadow-lg transform transition-transform hover:scale-105"
               />
-              <div className="grid-two-column">
-                
-                    <p key="fullName">
-                      <strong>Full Name:</strong> {userDetails.fullName || 'N/A'}
-                    </p>
-                    <p key="email">
-                      <strong>Email:</strong> {userDetails.email || 'N/A'}
-                    </p>
-                    <p key="phone">
-                      <strong>Phone:</strong> {userDetails.phone || 'N/A'}
-                    </p>
-                    <p key="dob">
-                      <strong>DOB:</strong> {userDetails.dob || 'N/A'}
-                    </p>
-                    <p key="university">
-                      <strong>University:</strong> {userDetails.university || 'N/A'}
-                    </p>
-                    <p key="degree">
-                      <strong>Degree:</strong> {userDetails.degree || 'N/A'}
-                    </p>
-                    <p key="gpa">
-                      <strong>GPA:</strong> {userDetails.gpa || 'N/A'}
-                    </p>
-                    <p key="location">
-                      <strong>Location:</strong> {userDetails.location || 'N/A'}
-                    </p>
-                  
+              <div className="grid grid-cols-2 gap-y-4 gap-x-10 text-gray-700 text-lg">
+                {Object.entries(userDetails.details).map(([key, value]) => (
+                  <p key={key}>
+                    <strong>{key}:</strong> {value}
+                  </p>
+                ))}
               </div>
             </div>
           </section>
 
           {/* Skills Section */}
-          <section id="skills" className="section">
-            <h2>Skills</h2>
-            <div className="flex-wrap-gap">
-              {(userDetails?.skills || []).map((skill) => (
-                <span key={skill} className="badge">{skill}</span>
+          <section id="skills" className="mb-10">
+            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Skills</h2>
+            <div className="flex flex-wrap gap-6">
+              {userDetails.skills.map((skill) => (
+                <span
+                  key={skill}
+                  className="bg-blue-100 text-blue-800 px-5 py-2 rounded-full shadow-md font-medium transform transition-transform hover:scale-105"
+                >
+                  {skill}
+                </span>
               ))}
             </div>
           </section>
 
           {/* Certifications Section */}
-          <section id="certifications" className="section">
-            <h2>Certifications</h2>
-            <ul>
-              {(userDetails?.certifications || []).map((certification) => (
-                <li key={certification} className="list-item">{certification}</li>
+          <section id="certifications" className="mb-10">
+            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Certifications</h2>
+            <ul className="list-disc pl-6 text-gray-700 text-lg space-y-2">
+              {userDetails?.certifications.map((certification) => (
+                <li key={certification}>{certification}</li>
               ))}
             </ul>
           </section>
 
           {/* Portfolio Section */}
-          <section id="portfolio" className="section">
-            <h2>Portfolio</h2>
+          <section id="portfolio" className="mb-10">
+            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Portfolio</h2>
             <p>
               <a
-                href={userDetails?.portfolio?.link || '#'}
+                href={userDetails.portfolio.link}
                 target="_blank"
-                className="link"
                 rel="noopener noreferrer"
+                className="text-blue-500 underline hover:text-blue-700"
               >
-                {userDetails?.portfolio?.link || 'N/A'}
+                {userDetails.portfolio.link}
               </a>
             </p>
           </section>
 
           {/* Social Media Section */}
-          <section id="social-media" className="section">
-            <h2>Social Media</h2>
-            <div className="flex-gap">
-              {(userDetails?.socialLinks || []).map((social) => (
+          <section id="social-media" className="mb-10">
+            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Social Media</h2>
+            <div className="flex gap-6">
+              {userDetails.socialLinks.map((social) => (
                 <a
                   key={social.platform}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2"
+                  className="flex items-center space-x-2 hover:opacity-80 transition"
                 >
-                  <i className={`fab ${social.iconClass} social-media-icon`} style={{ color: social.color }}></i>
-                  <span>{social.platform}</span>
+                  <i className={`fab ${social.iconClass} text-2xl`} style={{ color: social.color }}></i>
+                  <span className="text-blue-700">{social.platform}</span>
                 </a>
               ))}
             </div>
           </section>
 
           {/* Job Preferences Section */}
-          <section id="job-preferences" className="section">
-            <h2>Job Preferences</h2>
-            <div className="flex-wrap-gap">
-              {(userDetails?.jobPreferences || []).map((preference) => (
-                <span key={preference} className="badge">{preference}</span>
+          <section id="job-preferences">
+            <h2 className="text-blue-700 text-3xl font-bold border-b-4 border-blue-300 pb-3 mb-6">Job Preferences</h2>
+            <div className="flex flex-wrap gap-6">
+              {userDetails.jobPreferences.map((preference) => (
+                <span
+                  key={preference}
+                  className="bg-blue-100 text-blue-800 px-5 py-2 rounded-full shadow-md font-medium transform transition-transform hover:scale-105"
+                >
+                  {preference}
+                </span>
               ))}
             </div>
           </section>
@@ -177,3 +170,4 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
+

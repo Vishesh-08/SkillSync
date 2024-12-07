@@ -1,46 +1,92 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-//import Register from './pages/Register';<Route path="/" element={<Register />} />
 import About from './pages/About';
 import Contact from './pages/Contact';
-import JobList from './pages/Job-list';
 import Testimonials from './pages/Testimonial';
-import StudentLogin from './pages/StudentLogin'
-import BusinessLogin from "./pages/BLogin"
-import "./css/App.css"
-import Businessregister from "./pages/CompanyRegister"
+import StudentLogin from './pages/StudentLogin';
+import BusinessLogin from "./pages/BLogin";
+import "./css/App.css";
+import Businessregister from "./pages/CompanyRegister";
 import StudentRegistration from './pages/StudentRegister';
-import Dashboard from "./pages/studentDashboard"
-import ProtectedRoute from './components/protected_route';
+import Dashboard from "./pages/studentDashboard";
+import { useUserDetails } from './contexts/UserContext';
 
 const App = () => {
-    return (
-        <Router>
-            <Navbar />
-            <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About/>}/>
-            <Route path="/contact" element={<Contact/>}/>
-            <Route path="/testimonial" element={<Testimonials/>}/>
-            <Route path="/studentlogin" element={<StudentLogin/>}/>
-            <Route path="/studentregister" element={<StudentRegistration/>}/>
-            <Route path="/businesslogin" element={<BusinessLogin/>}/>
-            <Route path="/businessregister" element={<Businessregister/>}/>
-            <Route path="/dashboard" element={<ProtectedRoute>
+  const { isAuthenticated, setIsAuthenticated, setUserDetails } = useUserDetails();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const authenticate = async () => {
+      const token = Cookies.get("authToken");
+
+      if (!token) {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          'http://localhost:5000/api/students/auth',
+          {},
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          setUserDetails(response.data.student);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Authentication failed:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    authenticate();
+  }, [setIsAuthenticated, setUserDetails]);
+
+  if (isLoading) {
+    return <div className="loading-screen">Loading...</div>;
+  }
+
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/testimonial" element={<Testimonials />} />
+        <Route path="/studentlogin" element={<StudentLogin />} />
+        <Route path="/studentregister" element={<StudentRegistration />} />
+        <Route path="/businesslogin" element={<BusinessLogin />} />
+        <Route path="/businessregister" element={<Businessregister />} />
+
+        {/* Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            isAuthenticated ? (
               <Dashboard />
-            </ProtectedRoute>}/>
-            
-            
-                
-                
-            </Routes>
-            <Footer />
-        </Router>
-    );
+            ) : (
+              <Navigate to="/studentlogin" />
+            )
+          }
+        />
+      </Routes>
+      <Footer />
+    </Router>
+  );
 };
 
 export default App;

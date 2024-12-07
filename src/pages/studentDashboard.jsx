@@ -1,47 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useUserDetails } from '../contexts/UserContext'; // Ensure correct import path
 import '../css/Dashboard.css';
-import Cookies from 'js-cookie';
-import { Navigate } from 'react-router-dom';
-import axios from 'axios';
 
 const StudentDashboard = () => {
   const { userDetails, setUserDetails } = useUserDetails();
-  const [redirectToLogin, setRedirectToLogin] = useState(false);
+ 
 
-  useEffect(() => {
-    const authenticateStudent = async () => {
-      const token = Cookies.get("authToken");
-
-      if (!token) {
-        setRedirectToLogin(true);
-        return;
-      }
-
-      try {
-        const response = await axios.post(
-          'http://localhost:5000/api/students/auth',
-          {}, // Adjust this payload based on your backend requirements
-          { withCredentials: true }
-        );
-
-        if (response.status === 200) {
-          setUserDetails(response.data.student);
-        } else {
-          setRedirectToLogin(true);
-        }
-      } catch (error) {
-        console.error("Authentication failed:", error);
-        setRedirectToLogin(true);
-      }
-    };
-
-    authenticateStudent();
-  }, [setUserDetails]);
-
-  if (redirectToLogin) {
-    return <Navigate to="/studentlogin" />;
-  }
 
   return (
     <div className="dashboard-container">

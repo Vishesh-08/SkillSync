@@ -5,15 +5,13 @@ import '../css/Login.css'; // Assuming you have a CSS file for styling
 import axios from 'axios';
 import { useUserDetails } from '../contexts/UserContext';
 import Cookies from 'js-cookie';
-
 const StudentLogin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { userDetails, updateUserDetail, setUserDetails } = useUserDetails();
-  
+  const { setUserDetails, setIsAuthenticated } = useUserDetails();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,15 +26,13 @@ const StudentLogin = () => {
 
         if (response.status === 200) {
           alert('Login successful');
-          console.log(response.data.token);
           Cookies.set("authToken", response.data.token, { expires: 7 });
           setUserDetails(response.data.student);
+          setIsAuthenticated(true); // Update the authentication status in context
 
-          // Clear the form fields
           setEmail('');
           setPassword('');
 
-          // Redirect user to dashboard or the specified redirect URL
           navigate(response.data.redirect || '/dashboard');
         }
       } catch (error) {

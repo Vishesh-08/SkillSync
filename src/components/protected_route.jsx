@@ -1,24 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { useUserDetails } from "./";
+import axios from 'axios';
 
 const ProtectedRoute = ({ children }) => {
-  const [loading, setLoading] = useState(true);
+  const { setUserDetails } = useUserDetails();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = Cookies.get("authToken");
-    if (token) {
-      setIsAuthenticated(true);  // If token is found, user is authenticated
-    }
-    setLoading(false);  // Set loading to false after the check
-  }, []);
+    const authenticate = async () => {
+      const token = Cookies.get("authToken");
 
-  if (loading) {
-    return <div>Loading...</div>;  // You can replace this with a spinner or loader
-  }
+      if (!token) {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
 
-  return isAuthenticated ? children : <Navigate to="/studentlogin" />;  // Redirect to login if not authenticated
+      try {
+        const response = await axios.post(
+          'http://localhost:5000/api/students/auth',
+          {}, // Payload depends on your backend
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          setUserDetails(response.data.student);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Authentication error:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    authenticate();
+  }, [setUserDetails]);
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return isAuthenticated ? children : <Navigate to="/studentlogin" />;
 };
 
 export default ProtectedRoute;

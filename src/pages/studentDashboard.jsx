@@ -3,13 +3,13 @@ import { useUserDetails } from '../contexts/UserContext'; // Ensure correct impo
 import '../css/Dashboard.css';
 
 const StudentDashboard = () => {
-  // const { userDetails } = useContext(UserDetailsContext);
+   const { userDetails } = useUserDetails();
 
-  // if (!userDetails) {
-  //   return <div>Loading user details...</div>;
-  // }
+  if (!userDetails) {
+    return <div>Loading user details...</div>;
+  }
 
-  const userDetails = {
+  /*const userDetails = {
     name: "John Doe",
     profile: {
       image: "dhruv.jpeg",
@@ -34,13 +34,13 @@ const StudentDashboard = () => {
       { platform: "GitHub", url: "https://github.com/janedoe", iconClass: "fa-github", color: "#333" },
     ],
     jobPreferences: ["Full-time", "Remote", "Hybrid"],
-  };
+  };*/
 
   return (
     <div className="dashboard-container">
       {/* Header */}
       <header className="dashboard-header">
-        <h1>Welcome, {userDetails?.name || 'Student'}</h1>
+        <h1>Welcome, {userDetails?.fullName || 'Student'}</h1>
       </header>
 
       <div className="dashboard-content">
@@ -72,16 +72,37 @@ const StudentDashboard = () => {
             <h2>Profile</h2>
             <div className="flex-center-gap">
               <img
-                src={userDetails?.profile?.image || '/default-profile.png'}
+                src={userDetails?.image || '/default-profile.png'}
                 alt="Profile"
                 className="profile-image"
               />
               <div className="grid-two-column">
-                {Object.entries(userDetails.profile.details).map(([key, value]) => (
-                    <p key={key}>
-                      <strong>{key}:</strong> {value || 'N/A'}
+                
+                    <p key="fullName">
+                      <strong>Full Name:</strong> {userDetails.fullName || 'N/A'}
                     </p>
-                  ))}
+                    <p key="email">
+                      <strong>Email:</strong> {userDetails.email || 'N/A'}
+                    </p>
+                    <p key="phone">
+                      <strong>Phone:</strong> {userDetails.phone || 'N/A'}
+                    </p>
+                    <p key="dob">
+                      <strong>DOB:</strong> {userDetails.dob || 'N/A'}
+                    </p>
+                    <p key="university">
+                      <strong>University:</strong> {userDetails.university || 'N/A'}
+                    </p>
+                    <p key="degree">
+                      <strong>Degree:</strong> {userDetails.degree || 'N/A'}
+                    </p>
+                    <p key="gpa">
+                      <strong>GPA:</strong> {userDetails.gpa || 'N/A'}
+                    </p>
+                    <p key="location">
+                      <strong>Location:</strong> {userDetails.location || 'N/A'}
+                    </p>
+                  
               </div>
             </div>
           </section>

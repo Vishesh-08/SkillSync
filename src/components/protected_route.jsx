@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const ProtectedRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = Cookies.get("authToken");
     if (token) {
       setIsAuthenticated(true);  // If token is found, user is authenticated
     }

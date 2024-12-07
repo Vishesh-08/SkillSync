@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../css/Login.css'; // Assuming you have a CSS file for styling
 import axios from 'axios';
 import { useUserDetails } from '../contexts/UserContext';
+import Cookies from 'js-cookie';
 
 const StudentLogin = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const StudentLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { userDetails, updateUserDetail, setUserDetails } = useUserDetails();
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,8 +29,7 @@ const StudentLogin = () => {
         if (response.status === 200) {
           alert('Login successful');
           console.log(response.data.token);
-          // Store the token directly as a string
-          localStorage.setItem('authToken', response.data.token);
+          Cookies.set("authToken", response.data.token, { expires: 7 });
           setUserDetails(response.data.student);
 
           // Clear the form fields

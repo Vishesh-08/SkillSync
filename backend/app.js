@@ -5,13 +5,15 @@ const cors = require('cors');
 const studentRoutes = require('./routes/studentRoutes');
 const companyRoutes=require("./routes/companyRoutes")
 const cookieParser = require('cookie-parser');
+const {isAuthenticated}=require("./middleware/auth");
+const { FcNext } = require('react-icons/fc');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json()); // For JSON bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: "http://localhost:5173", // Frontend URL
+  origin: ["http://192.168.0.101:5173", "http://localhost:5173"],// Frontend URL
   credentials: true, // Allow cookies and authorization headers
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
@@ -38,6 +40,7 @@ mongoose.connect(dbUrl, {
 // Routes
 app.use('/api/students', studentRoutes);
 app.use('/api/companies', companyRoutes);
+app.post("/auth",isAuthenticated)
 
 
 // Start the server

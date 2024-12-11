@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../css/Login.css'; // Assuming you have a CSS file for styling
 import axios from 'axios';
 import { useUserDetails } from '../contexts/UserContext';
 import Cookies from 'js-cookie';
+
+const server = import.meta.env.VITE_SERVER_URL;
+
 const StudentLogin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { setUserDetails, setIsAuthenticated } = useUserDetails();
+  const { setUserDetails, setIsAuthenticated, isAuthenticated,setUserType } = useUserDetails();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,21 +22,19 @@ const StudentLogin = () => {
       setLoading(true);
       try {
         const response = await axios.post(
-          'http://localhost:5000/api/students/login',
+          `${server || 'http://localhost:5000'}/api/students/login`,
           { email, password },
           { withCredentials: true }
         );
 
         if (response.status === 200) {
           alert('Login successful');
-          Cookies.set("authToken", response.data.token, { expires: 7 });
-          setUserDetails(response.data.student);
+          Cookies.set('authToken', response.data.token, { expires: 7 });
+          setUserDetails(response.data.user);
           setIsAuthenticated(true); // Update the authentication status in context
-
+          setUserType("student");
           setEmail('');
           setPassword('');
-
-          navigate(response.data.redirect || '/dashboard');
         }
       } catch (error) {
         console.error('Error during login:', error.message || error.response?.data);
@@ -42,9 +43,15 @@ const StudentLogin = () => {
         setLoading(false);
       }
     } else {
-      alert("Both fields are required");
+      alert('Both fields are required');
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]); // Redirect after authentication is set
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

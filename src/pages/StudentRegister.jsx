@@ -146,7 +146,7 @@ const StudentRegistration = () => {
     
   
     try {
-      const response = await axios.post("http://localhost:5000/api/students/register", submissionData, {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL||"http://localhost:5000"}/api/students/register`, submissionData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

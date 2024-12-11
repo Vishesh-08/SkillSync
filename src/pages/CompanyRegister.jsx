@@ -61,7 +61,7 @@ const CompanyRegistration = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:5000/api/companies/register", formDataToSubmit, {
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL||"http://localhost:5000"}/api/companies/register`, formDataToSubmit, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }

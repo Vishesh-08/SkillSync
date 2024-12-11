@@ -1,6 +1,8 @@
 const Student = require("../models/Student");
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
+const server=process.env.SERVER_URL;
+console.log(server)
 
 // Register student
 const registerStudent = async (req, res) => {
@@ -98,7 +100,7 @@ const loginStudent = async (req, res) => {
     const studentResponse = {
       profile: {
         fullName: student.fullName,
-        image: student.image,
+        image: `${server || 'http://localhost:5000'}/api/students/upload/`+student.email+".jpg",
       },
       details: {
         email: student.email,
@@ -123,8 +125,8 @@ const loginStudent = async (req, res) => {
       .json({
         message: "Login successful",
         redirect: "/dashboard",
-        student: studentResponse,
-        token,
+        user: studentResponse,
+        token,userType:"student"
       });
   } catch (error) {
     console.error("Error during login:", error);
@@ -137,7 +139,7 @@ const studentAuth= async (req,res)=>{
   const studentResponse = {
     profile: {
       fullName: studentRecord.fullName,
-      image: studentRecord.image,
+      image: `${server || 'http://localhost:5000'}/api/students/upload/`+email+".jpg",
     },
     details: {
       email: studentRecord.email,
@@ -159,7 +161,7 @@ const studentAuth= async (req,res)=>{
   // Respond with the token and formatted student object
   return res
     .status(200)
-    .json({student: studentResponse});
+    .json({user: {...studentResponse,userType:"student"}});
 
 }
 

@@ -7,9 +7,9 @@ import WOW from 'wow.js';
 import happy_boss from "../img/happy boss.jpg";
 import happy_emp from "../img/happy employee.jpg";
 import "../css/Home.css";
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import "../godfather_css/style.css";
-import axios from 'axios';
+import CategoryCard from '../components/CategoryCard'; // Importing reusable component
 
 const Home = () => {
   const navigate = useNavigate();
@@ -28,86 +28,47 @@ const Home = () => {
     autoplaySpeed: 3000,
   };
 
-  const checkLoginStatusStudent = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/api/students/login',{}, {
-        withCredentials: true,
-      });
-      if(response.data.redirect){
-        
-        navigate(response.data.redirect)
-      }
+  const categories = [
+    { iconClass: 'fa-mail-bulk', title: 'Marketing', vacancies: 123 },
+    { iconClass: 'fa-headset', title: 'Customer Service', vacancies: 123 },
+    { iconClass: 'fa-user-tie', title: 'Human Resource', vacancies: 123 },
+    { iconClass: 'fa-tasks', title: 'Project Management', vacancies: 123 },
+    { iconClass: 'fa-chart-line', title: 'Business Development', vacancies: 123 },
+    { iconClass: 'fa-hands-helping', title: 'Sales & Communication', vacancies: 123 },
+    { iconClass: 'fa-book-reader', title: 'Teaching & Education', vacancies: 123 },
+    { iconClass: 'fa-drafting-compass', title: 'Design & Creative', vacancies: 123 },
+  ];
 
-      
-    } catch (error) {
-      
-        navigate(error.response.data.redirect || "/studentlogin");
-      
-  };}
-
-  const checkLoginStatusCompany = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/api/companies/login',{}, {
-        withCredentials: true,
-      });
-      console.log(response?.cookie)
-      
-      if(response.data.redirect){
-        
-        navigate(response.data.redirect);
-      }
-
-      
-    } catch (error) {
-      
-        navigate(error.response.data.redirect || "/businesslogin");
-      
-  };}
-  
+  const handleStudentNavigation = () => navigate("/dashboard");
+  const handleCompanyNavigation = () => navigate("/businessdashboard");
 
   return (
     <div className="container-fluid p-0">
       {/* Carousel Section */}
       <Slider {...settings} className="header-carousel position-relative">
-        <div className="owl-carousel-item position-relative">
-          <img className="img-fluid" src={happy_boss} alt="Happy Employee" />
-          <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style={{ background: 'rgba(43, 57, 64, .5)' }}>
-            <div className="container">
-              <div className="row justify-content-start">
-                <div className="col-10 col-lg-8">
-                  <h1 className="display-3 text-white animated slideInDown mb-4">Where Talent Meets Opportunity</h1>
-                  <p className="fs-5 fw-medium text-white mb-4 pb-2">Connecting job seekers with roles that inspire and empower them to grow and succeed. Your dream career starts here.</p>
-                  <button onClick={checkLoginStatusStudent} className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
-                    Search A Job
-                  </button>
-                  <button onClick={checkLoginStatusCompany} className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
-                    Find A Talent
-                  </button>
+        {[{ src: happy_boss, title: 'Where Talent Meets Opportunity', desc: 'Connecting job seekers with roles that inspire and empower them to grow and succeed. Your dream career starts here.' },
+        { src: happy_emp, title: 'Discover Talent That Drives Success', desc: 'Find top candidates who align with your vision and elevate your business to new heights.' }
+        ].map((item, index) => (
+          <div className="owl-carousel-item position-relative" key={index}>
+            <img className="img-fluid" src={item.src} alt={item.title} />
+            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style={{ background: 'rgba(43, 57, 64, .5)' }}>
+              <div className="container">
+                <div className="row justify-content-start">
+                  <div className="col-10 col-lg-8">
+                    <h1 className="display-3 text-white animated slideInDown mb-4">{item.title}</h1>
+                    <p className="fs-5 fw-medium text-white mb-4 pb-2">{item.desc}</p>
+                    <button onClick={handleStudentNavigation} className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
+                      Search A Job
+                    </button>
+                    <button onClick={handleCompanyNavigation} className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
+                      Find A Talent
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="owl-carousel-item position-relative">
-          <img className="img-fluid" src={happy_emp} alt="Happy Boss" />
-          <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style={{ background: 'rgba(43, 57, 64, .5)' }}>
-            <div className="container">
-              <div className="row justify-content-start">
-                <div className="col-10 col-lg-8">
-                  <h1 className="display-3 text-white animated slideInDown mb-4">Discover Talent That Drives Success</h1>
-                  <p className="fs-5 fw-medium text-white mb-4 pb-2">Find top candidates who align with your vision and elevate your business to new heights.</p>
-                  <button onClick={checkLoginStatusStudent} className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
-                    Search A Job
-                  </button>
-                  <button onClick={checkLoginStatusCompany} className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
-                    Find A Talent
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </Slider>
 
       {/* Search Section */}
@@ -116,30 +77,16 @@ const Home = () => {
           <div className="row g-2">
             <div className="col-md-10">
               <div className="row g-2">
-                <div className="col-md-4">
-                  <select className="form-select border-0">
-                    <option value="" disabled>Category</option>
-                    <option value="1">Category 1</option>
-                    <option value="2">Category 2</option>
-                    <option value="3">Category 3</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <select className="form-select border-0">
-                    <option value="" disabled>Category</option>
-                    <option value="1">Category 1</option>
-                    <option value="2">Category 2</option>
-                    <option value="3">Category 3</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <select className="form-select border-0">
-                    <option value="" disabled>Location</option>
-                    <option value="1">Location 1</option>
-                    <option value="2">Location 2</option>
-                    <option value="3">Location 3</option>
-                  </select>
-                </div>
+                {['Category', 'Category', 'Location'].map((placeholder, idx) => (
+                  <div className="col-md-4" key={idx}>
+                    <select className="form-select border-0">
+                      <option value="" disabled>{placeholder}</option>
+                      <option value="1">{placeholder} 1</option>
+                      <option value="2">{placeholder} 2</option>
+                      <option value="3">{placeholder} 3</option>
+                    </select>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="col-md-2" style={{ marginTop: '13px' }}>
@@ -149,71 +96,22 @@ const Home = () => {
         </div>
       </div>
 
-     {/* Category Section */}
-     <div className="container-xxl py-5">
+      {/* Category Section */}
+      <div className="container-xxl py-5">
         <div className="container">
           <h1 className="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Explore By Category</h1>
           <div className="row g-4">
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-mail-bulk text-primary mb-4"></i>
-                <h6 className="mb-3">Marketing</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-headset text-primary mb-4"></i>
-                <h6 className="mb-3">Customer Service</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-user-tie text-primary mb-4"></i>
-                <h6 className="mb-3">Human Resource</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-tasks text-primary mb-4"></i>
-                <h6 className="mb-3">Project Management</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-chart-line text-primary mb-4"></i>
-                <h6 className="mb-3">Business Development</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-hands-helping text-primary mb-4"></i>
-                <h6 className="mb-3">Sales & Communication</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-book-reader text-primary mb-4"></i>
-                <h6 className="mb-3">Teaching & Education</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
-            <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-              <a className="cat-item rounded p-4" href="">
-                <i className="fa fa-3x fa-drafting-compass text-primary mb-4"></i>
-                <h6 className="mb-3">Design & Creative</h6>
-                <p className="mb-0">123 Vacancy</p>
-              </a>
-            </div>
+            {categories.map((category, idx) => (
+              <CategoryCard
+                key={idx}
+                iconClass={category.iconClass}
+                title={category.title}
+                vacancies={category.vacancies|| 0}
+              />
+            ))}
           </div>
         </div>
       </div>
-        
 
       <a href="#" className="btn btn-lg btn-primary btn-lg-square back-to-top">
         <i className="bi bi-arrow-up"></i>

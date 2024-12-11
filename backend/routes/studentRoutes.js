@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const fs=require("fs")
 const path = require("path");
-const {authenticateStudentToken,isAuthenticated}=require("../middleware/authStudent")
+const {authenticateStudentToken,isAuthenticated}=require("../middleware/auth")
 
 // Set storage to save the file on disk
 const storage = multer.diskStorage({
@@ -26,7 +26,8 @@ const { registerStudent,loginStudent,studentAuth } = require("../controllers/stu
 router.post("/register", upload.single("resume"), registerStudent);
 
 router.post("/login",loginStudent);
-router.post("/auth",isAuthenticated,studentAuth);
+
+router.use("/upload", express.static(path.join(__dirname, '../uploads')));
 //router.post("profile",authenticateStudentToken,studentProfile)
 //TODO:student profile yet to be create!
 

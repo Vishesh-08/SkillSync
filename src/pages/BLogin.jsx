@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { NavLink ,useNavigate} from 'react-router-dom'; // Import NavLink
 import '../css/Login.css'; // Assuming you have a CSS file for styling
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // For eye icons (using react-icons)
 import "../godfather_css/style.css";
 import axios from 'axios';
+import { useUserDetails } from '../contexts/UserContext'
+import Cookies from 'js-cookie';
 const BusinessLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const {isAuthenticated,setIsAuthenticated,setUserDetails,setUserType}=useUserDetails();
   const navigate=useNavigate();
 
   // Handle form submission
@@ -20,13 +23,17 @@ const BusinessLogin = () => {
           password,
         },{withCredentials:true});
 
-        if (response.status == 201) {
-          navigate(response.data.redirect);
-          console.log(response.cookie)
+        if (response.status == 200) {
           alert("Login successful");
+          setIsAuthenticated(true);
+          Cookies.set('authToken', response.data.token, { expires: 7 });
+          setUserDetails(response.data.user);
+          setUserType("company")
+          
 
         } else {
           alert("Something went wrong!");
+          setIsAuthenticated(false);
         }
       } catch (error) {
         console.error("Error during login:", error.response?.data || error.message);
@@ -38,7 +45,11 @@ const BusinessLogin = () => {
   };
 
   // Toggle password visibility
-  
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/businessdashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {

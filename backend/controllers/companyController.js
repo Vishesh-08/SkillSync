@@ -70,59 +70,100 @@ const companyRegister=async (req, res) => {
 
 
   const companyLogin = async (req, res) => {
-    const token = req.cookies?.companyAuthToken;
-
-  // If token exists, validate it and redirect to dashboard
-  if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET_COMPANY);
-      return res.status(302).json({ redirect: "/bussinessdashboard" }); // Already logged in, redirect to dashboard
+      const { email, password } = req.body;
+  
+      // Validate inputs
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+      }
+  
+      // Find the company by email
+      const newCompany = await Company.findOne({ email,password });
+      if (!newCompany) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+  
+      // Compare plain-text password
+      if (newCompany.password !== password) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+  
+      // Generate a JWT
+      const token = jwt.sign(
+        { id: newCompany._id, email: newCompany.email, userType: 'company' },
+        process.env.JWT_SECRET_COMPANY,
+        { expiresIn: "1h" } // Token expiration time
+      );
+  
+      // Prepare the company details for frontend
+      const UserDetails = {
+        companyName: newCompany.companyName,
+        companyLogo: newCompany.companyLogo, // You can directly use the logo file path or URL from the database
+        companyType: newCompany.companyType,
+        foundedYear: newCompany.foundedYear,
+        numberOfEmployees: newCompany.numberOfEmployees,
+        contactPerson: newCompany.contactPerson,
+        email: newCompany.email,
+        phone: newCompany.phone,
+        address: newCompany.address,
+        website: newCompany.website,
+        registrationNumber: newCompany.registrationNumber,
+        verificationDocuments: [
+          { name: "Company Registration", url: "/docs/registration.pdf" },  // Use the correct path or URL to documents
+          { name: "Tax Certificate", url: "/docs/tax_certificate.pdf" },      // Use the correct path or URL to documents
+        ],
+        socialMediaLinks: [
+          { platform: "LinkedIn", url: newCompany.socialMediaLinks, iconClass: "fa-linkedin", color: "#0077b5" },
+          { platform: "Twitter", url: newCompany.socialMediaLinks, iconClass: "fa-twitter", color: "#1DA1F2" },
+          { platform: "GitHub", url: newCompany.socialMediaLinks, iconClass: "fa-github", color: "#333" },
+        ]
+      };
+  
+      // Set the JWT in an HTTP-only cookie
+      res.status(200).json({
+        message: "Login successful", // Can be customized for different user types
+        user:{ ...UserDetails,userType: "company"}, // Send transformed company data
+        token,
+      });
     } catch (error) {
-      console.log("Invalid token. Proceeding to login.");
-      // Continue with login process if token is invalid
+      res.status(500).json({ error: `An error occurred: ${error.message}` });
     }
-  }
-    try {
-        const { email, password } = req.body;
+  };
+  
+const companyAuth= async (req,res)=>{
+  const email=req.user.email
+  const newCompany = await Company.findOne({ email,password });
+  const UserDetails = {
+    companyName: newCompany.companyName,
+    companyLogo: newCompany.companyLogo, // You can directly use the logo file path or URL from the database
+    companyType: newCompany.companyType,
+    foundedYear: newCompany.foundedYear,
+    numberOfEmployees: newCompany.numberOfEmployees,
+    contactPerson: newCompany.contactPerson,
+    email: newCompany.email,
+    phone: newCompany.phone,
+    address: newCompany.address,
+    website: newCompany.website,
+    registrationNumber: newCompany.registrationNumber,
+    verificationDocuments: [
+      { name: "Company Registration", url: "/docs/registration.pdf" },  // Use the correct path or URL to documents
+      { name: "Tax Certificate", url: "/docs/tax_certificate.pdf" },      // Use the correct path or URL to documents
+    ],
+    socialMediaLinks: [
+      { platform: "LinkedIn", url: newCompany.socialMediaLinks, iconClass: "fa-linkedin", color: "#0077b5" },
+      { platform: "Twitter", url: newCompany.socialMediaLinks, iconClass: "fa-twitter", color: "#1DA1F2" },
+      { platform: "GitHub", url: newCompany.socialMediaLinks, iconClass: "fa-github", color: "#333" },
+    ]
+  };
 
-        // Validate inputs
-        if (!email || !password) {
-            return res.status(400).json({ error: "Email and password are required" });
-        }
+  // Respond with the token and formatted student object
+  return res
+    .status(200)
+    .json({user:{...UserDetails,userType: "company"} });
 
-        // Find the company by email
-        const newCompany = await Company.findOne({ email });
-        if (!newCompany) {
-            return res.status(401).json({ error: "Invalid email or password" });
-        }
-
-        // Compare plain text passwords
-        if (newCompany.password !== password) {
-            return res.status(401).json({ error: "Invalid email or password" });
-        }
-
-        // Generate a JWT
-        const token = jwt.sign(
-            { id: newCompany._id, email: newCompany.email },
-            process.env.JWT_SECRET_COMPANY,
-            { expiresIn: "1h" } // Token expiration time
-        );
-
-        // Set the JWT in an HTTP-only cookie
-        console.log("api hit");
-
-      
-        res.cookie("companyAuthToken", token, {
-          httpOnly: true, // Prevent access from client-side JavaScript
-          secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-          maxAge: 3600000, // 1 hour in milliseconds
-          sameSite: "strict", // Prevent CSRF attacks
-      }).status(201).json({ message: "Login successful", redirect: "/bussinessdashboard" });
-    } catch (error) {
-        res.status(500).json({ error: `An error occurred: ${error.message}` });
-    }
-};
+}
 
   
   
-module.exports={companyRegister,companyLogin};
+module.exports={companyRegister,companyLogin,companyAuth};

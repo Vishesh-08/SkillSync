@@ -9,84 +9,102 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Testimonials from './pages/Testimonial';
 import StudentLogin from './pages/StudentLogin';
-import BusinessLogin from "./pages/BLogin";
-import "./css/App.css";
-import Businessregister from "./pages/CompanyRegister";
-import StudentRegistration from './pages/StudentRegister';
-import Dashboard from "./pages/studentDashboard";
+import BusinessLogin from './pages/BLogin';
+import './css/App.css';
+import BusinessRegister from './pages/CompanyRegister';
+import StudentRegister from './pages/StudentRegister';
+import Dashboard from './pages/StudentDashboard';
+import BusinessDashboard from './pages/CompanyDashboard';
 import { useUserDetails } from './contexts/UserContext';
 
+// Protected Route Component
+const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
+    return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
+};
+
 const App = () => {
-  const { isAuthenticated, setIsAuthenticated, setUserDetails } = useUserDetails();
-  const [isLoading, setIsLoading] = useState(true);
+    const { setUserDetails, isAuthenticated, setIsAuthenticated ,userType,setUserType} = useUserDetails();
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null); // State for managing error messages
 
-  useEffect(() => {
-    const authenticate = async () => {
-      const token = Cookies.get("authToken");
+    useEffect(() => {
+        const authenticate = async () => {
+            const token = Cookies.get('authToken');
+            if (!token) {
+                setIsAuthenticated(false);
+                setIsLoading(false);
+                return;
+            }
 
-      if (!token) {
-        setIsAuthenticated(false);
-        setIsLoading(false);
-        return;
-      }
+            try {
+                const response = await axios.post(
+                    `${import.meta.env.VITE_SERVER_URL || 'http://localhost:5000'}/auth`,
+                    {userType},
+                    { withCredentials: true }
+                );
 
-      try {
-        const response = await axios.post(
-          'http://localhost:5000/api/students/auth',
-          {},
-          { withCredentials: true }
-        );
+                if (response.status === 200) {
+                    setUserDetails(response.data.user);
+                    setIsAuthenticated(true);
+                    setUserType(response.data.user.userType)
+                } else {
+                    setIsAuthenticated(false);
+                    setUserType("");
+                }
+            } catch (error) {
+                console.error("Authentication failed:", error);
+                setError("Authentication failed. Please try again.");
+                setIsAuthenticated(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-        if (response.status === 200) {
-          setUserDetails(response.data.student);
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error("Authentication failed:", error);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+        authenticate();
+    }, [setUserDetails, setIsAuthenticated,isAuthenticated]);
 
-    authenticate();
-  }, [setIsAuthenticated, setUserDetails]);
+    
 
-  if (isLoading) {
-    return <div className="loading-screen">Loading...</div>;
-  }
+    return (
+        <Router>
+            <Navbar />
+            {error && <div className="error-message">{error}</div>} {/* Show error if any */}
+            <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/testimonial" element={<Testimonials />} />
+                <Route path="/studentlogin" element={<StudentLogin />} />
+                <Route path="/studentregister" element={<StudentRegister />} />
+                <Route path="/businesslogin" element={<BusinessLogin />} />
+                <Route path="/businessregister" element={<BusinessRegister />} />
 
-  return (
-    <Router>
-      <Navbar />
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/testimonial" element={<Testimonials />} />
-        <Route path="/studentlogin" element={<StudentLogin />} />
-        <Route path="/studentregister" element={<StudentRegistration />} />
-        <Route path="/businesslogin" element={<BusinessLogin />} />
-        <Route path="/businessregister" element={<Businessregister />} />
-
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            isAuthenticated ? (
-              <Dashboard />
-            ) : (
-              <Navigate to="/studentlogin" />
-            )
-          }
-        />
-      </Routes>
-      <Footer />
-    </Router>
-  );
+                {/* Protected Routes */}
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute
+                            element={<Dashboard />}
+                            isAuthenticated={isAuthenticated}
+                            redirectTo="/studentlogin"
+                        />
+                    }
+                />
+                <Route
+                    path="/businessdashboard"
+                    element={
+                        <ProtectedRoute
+                            element={<BusinessDashboard />}
+                            isAuthenticated={isAuthenticated}
+                            redirectTo="/businesslogin"
+                        />
+                    }
+                />
+            </Routes>
+            <Footer />
+        </Router>
+    );
 };
 
 export default App;

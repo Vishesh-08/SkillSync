@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const { companyRegister, companyLogin } = require("../controllers/companyController");
+const { companyRegister, companyLogin,searchCandidate } = require("../controllers/companyController");
 
 
 const router = express.Router();
@@ -47,5 +47,6 @@ router.post(
 );
 
 router.post("/login", companyLogin);
+router.post("/search", searchCandidate);
 
 module.exports = router;

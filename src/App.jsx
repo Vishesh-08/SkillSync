@@ -18,19 +18,19 @@ import BusinessDashboard from './pages/CompanyDashboard';
 import { useUserDetails } from './contexts/UserContext';
 
 // Protected Route Component
-const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
-    return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
+const ProtectedRoute = ({ children, isAuthenticated, redirectTo }) => {
+    return isAuthenticated ? children : <Navigate to={redirectTo} />;
 };
 
 const App = () => {
-    const { setUserDetails, isAuthenticated, setIsAuthenticated ,userType,setUserType} = useUserDetails();
+    const { setUserDetails, isAuthenticated, setIsAuthenticated, userType, setUserType,userDetails } = useUserDetails();
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null); // State for managing error messages
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const authenticate = async () => {
             const token = Cookies.get('authToken');
-            if (!token) {
+            if (!token && ! userDetails) {
                 setIsAuthenticated(false);
                 setIsLoading(false);
                 return;
@@ -39,21 +39,21 @@ const App = () => {
             try {
                 const response = await axios.post(
                     `${import.meta.env.VITE_SERVER_URL || 'http://localhost:5000'}/auth`,
-                    {userType},
+                    { userType },
                     { withCredentials: true }
                 );
 
                 if (response.status === 200) {
                     setUserDetails(response.data.user);
                     setIsAuthenticated(true);
-                    setUserType(response.data.user.userType)
+                    setUserType(response.data.user.userType);
                 } else {
                     setIsAuthenticated(false);
-                    setUserType("");
+                    setUserType('');
                 }
             } catch (error) {
-                console.error("Authentication failed:", error);
-                setError("Authentication failed. Please try again.");
+                console.error('Authentication failed:', error);
+                setError('Authentication failed. Please try again.');
                 setIsAuthenticated(false);
             } finally {
                 setIsLoading(false);
@@ -61,14 +61,16 @@ const App = () => {
         };
 
         authenticate();
-    }, [setUserDetails, setIsAuthenticated,isAuthenticated]);
+    }, [setUserDetails, setUserType, setIsAuthenticated, userType]);
 
-    
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <Router>
             <Navbar />
-            {error && <div className="error-message">{error}</div>} {/* Show error if any */}
+           
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
@@ -84,21 +86,17 @@ const App = () => {
                 <Route
                     path="/dashboard"
                     element={
-                        <ProtectedRoute
-                            element={<Dashboard />}
-                            isAuthenticated={isAuthenticated}
-                            redirectTo="/studentlogin"
-                        />
+                        <ProtectedRoute isAuthenticated={isAuthenticated} redirectTo="/studentlogin">
+                            <Dashboard />
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/businessdashboard"
                     element={
-                        <ProtectedRoute
-                            element={<BusinessDashboard />}
-                            isAuthenticated={isAuthenticated}
-                            redirectTo="/businesslogin"
-                        />
+                        <ProtectedRoute isAuthenticated={isAuthenticated} redirectTo="/businesslogin">
+                            <BusinessDashboard />
+                        </ProtectedRoute>
                     }
                 />
             </Routes>

@@ -1,5 +1,7 @@
 const Company=require("../models/company");
 const jwt = require("jsonwebtoken");
+const Student=require("../models/Student")
+const {candidateRanked}=require("../helper/candidate_rank")
 
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -92,12 +94,12 @@ const companyRegister=async (req, res) => {
       // Generate a JWT
       const token = jwt.sign(
         { id: newCompany._id, email: newCompany.email, userType: 'company' },
-        process.env.JWT_SECRET_COMPANY,
+        process.env.JWT_SECRET,
         { expiresIn: "1h" } // Token expiration time
       );
   
       // Prepare the company details for frontend
-      const UserDetails = {
+      const userDetails = {
         companyName: newCompany.companyName,
         companyLogo: newCompany.companyLogo, // You can directly use the logo file path or URL from the database
         companyType: newCompany.companyType,
@@ -123,7 +125,7 @@ const companyRegister=async (req, res) => {
       // Set the JWT in an HTTP-only cookie
       res.status(200).json({
         message: "Login successful", // Can be customized for different user types
-        user:{ ...UserDetails,userType: "company"}, // Send transformed company data
+        user:{ ...userDetails,userType: "company"}, // Send transformed company data
         token,
       });
     } catch (error) {
@@ -133,7 +135,8 @@ const companyRegister=async (req, res) => {
   
 const companyAuth= async (req,res)=>{
   const email=req.user.email
-  const newCompany = await Company.findOne({ email,password });
+  
+  const newCompany = await Company.findOne({ email });
   const UserDetails = {
     companyName: newCompany.companyName,
     companyLogo: newCompany.companyLogo, // You can directly use the logo file path or URL from the database
@@ -163,7 +166,40 @@ const companyAuth= async (req,res)=>{
     .json({user:{...UserDetails,userType: "company"} });
 
 }
+const searchCandidate = async (req, res) => {
+  const skills = req.body.skills; // Expecting skills in the request body
+  const behaviorWeight = req.body.behaviorWeight || 1; // Default weights if not provided
+  const cgpaWeight = req.body.cgpaWeight || 1;
+
+  if (!Array.isArray(skills) || skills.length === 0) {
+    return res.status(400).json({ message: 'Skills array is required and cannot be empty.' });
+  }
+
+  try {
+    // Find candidates matching at least one skill
+    const candidates = await Student.find({ skills: { $in: skills } });
+
+    if (candidates.length === 0) {
+      return res.status(404).json({ message: 'No candidates found matching the criteria.' });
+    }
+
+    // Rank candidates using your custom ranking function
+    const resultant_list = candidateRanked(candidates, skills, behaviorWeight, cgpaWeight);
+
+    res.status(200).json({ 
+      data: resultant_list,
+      count: resultant_list.length, // Number of candidates found
+      query: { skills, behaviorWeight, cgpaWeight } // Echo the query parameters for debugging
+    });
+  } catch (err) {
+    console.error('Error searching candidates:', err);
+    return res.status(500).json({ message: 'An error occurred while searching candidates.', error: err.message });
+  }
+};
+
+//TODO:search candidate has to be implement 
+//TODO:vacancy count function has to be implement 
 
   
   
-module.exports={companyRegister,companyLogin,companyAuth};
+module.exports={companyRegister,companyLogin,companyAuth,searchCandidate};

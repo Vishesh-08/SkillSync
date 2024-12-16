@@ -49,7 +49,7 @@ const StudentLogin = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/job-search');
     }
   }, [isAuthenticated, navigate]); // Redirect after authentication is set
 

@@ -1,0 +1,277 @@
+:root {
+    --primary-color: #00796b;
+    --secondary-color: #4dd0e1;
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --button-color: #00796b;
+    --button-hover-color: #004d40;
+  }
+  
+  body {
+    font-family: "Roboto", Arial, sans-serif;
+    margin: 0px;
+    background: linear-gradient(to bottom right, #f0f4f8, #d9e6f2);
+    font-size: 16px;
+    color: var(--text-color);
+  }
+  
+  .cont {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    flex-direction: column;
+  }
+  
+  form {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 25px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  input:focus,
+  select:focus,
+  input[type="submit"]:focus {
+    outline: 2px solid var(--secondary-color);
+    box-shadow: 0 0 8px var(--secondary-color);
+  }
+  
+  input[type="submit"] {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    transition: box-shadow 0.2s ease-in-out;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    width: 100%;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: var(--button-hover-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  input[type="submit"]:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* Job Role Dropdown Styling */
+  select {
+    width: 100%;
+    padding: 10px 15px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px var(--secondary-color);
+  }
+  
+  /* Styles for the Skills and Job Role dropdown container */
+  .skills-container,
+  .job-role-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .skills-dropdown,
+  .job-role-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    opacity: 0;
+    transform: scaleY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .skills-dropdown.visible,
+  .job-role-dropdown.visible {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  
+  .skills-dropdown div,
+  .job-role-dropdown div {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .skills-dropdown div:hover,
+  .job-role-dropdown div:hover {
+    background-color: #f0f8ff;
+    color: #00796b;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  
+  .skills-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .select-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+  
+  .select-box:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .placeholder {
+    font-style: italic;
+    color: #aaa;
+  }
+  
+  .selected-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .skill-bubble {
+    background-color: #e0f7fa;
+    border: 1px solid #4dd0e1;
+    border-radius: 15px;
+    padding: 5px 10px;
+    margin: 2px;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .skill-bubble .remove-btn {
+    color: #ff5a5a;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .arrow {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .skills-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+  }
+  
+  .skills-dropdown.visible {
+    display: block;
+    opacity: 1;
+    max-height: 300px;
+  }
+  
+  .skills-dropdown div {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .skills-dropdown div:hover {
+    background-color: #f0f8ff;
+    color: var(--primary-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .skills-dropdown div.selected {
+    background-color: #e0f7fa;
+  }
+  
+  fieldset {
+    border: 1px solid var(--secondary-color);
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  legend {
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  
+  form > *:not(:last-child) {
+    margin-bottom: 15px;
+  }
+  
+  .spacing {
+    margin-top: 20px;
+  }
+  
+  @media (max-width: 600px) {
+    form {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    .skills-container {
+      font-size: 14px;
+    }
+  
+    input[type="submit"] {
+      font-size: 14px;
+    }
+  }
+  

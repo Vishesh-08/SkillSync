@@ -15,22 +15,38 @@ import BusinessRegister from './pages/CompanyRegister';
 import StudentRegister from './pages/StudentRegister';
 import Dashboard from './pages/StudentDashboard';
 import BusinessDashboard from './pages/CompanyDashboard';
+import SkillsForm from './pages/SkillsForm';
 import { useUserDetails } from './contexts/UserContext';
+const userAuth={
+    "student":["/dashboard","/job-search"],
+    "company":["/businessdashboard","/candidate-search"]
+}
 
 // Protected Route Component
-const ProtectedRoute = ({ children, isAuthenticated, redirectTo }) => {
-    return isAuthenticated ? children : <Navigate to={redirectTo} />;
+const ProtectedRoute = ({ children, isAuthenticated, redirectTo, path, userType }) => {
+    // Check if the user is authenticated
+    if (!isAuthenticated) {
+        return <Navigate to={redirectTo} replace />;
+    }
+
+    // Check if the user is authorized for the route
+    const allowedPaths = userAuth[userType] || [];
+    if (!allowedPaths.includes(path)) {
+        return <div>You are not authorized to access this page.</div>; // Graceful message instead of alert
+    }
+
+    // Render the children if all checks pass
+    return children;
 };
 
 const App = () => {
-    const { setUserDetails, isAuthenticated, setIsAuthenticated, userType, setUserType,userDetails } = useUserDetails();
+    const { setUserDetails, isAuthenticated, setIsAuthenticated, userType, setUserType, userDetails } = useUserDetails();
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const authenticate = async () => {
             const token = Cookies.get('authToken');
-            if (!token && ! userDetails) {
+            if (!token) {
                 setIsAuthenticated(false);
                 setIsLoading(false);
                 return;
@@ -39,21 +55,20 @@ const App = () => {
             try {
                 const response = await axios.post(
                     `${import.meta.env.VITE_SERVER_URL || 'http://localhost:5000'}/auth`,
-                    { userType },
+                    {}, // Removed `userType` from the body
                     { withCredentials: true }
                 );
 
                 if (response.status === 200) {
                     setUserDetails(response.data.user);
                     setIsAuthenticated(true);
-                    setUserType(response.data.user.userType);
+                    setUserType(response.data.user.userType); // Set userType from server response
                 } else {
                     setIsAuthenticated(false);
                     setUserType('');
                 }
             } catch (error) {
                 console.error('Authentication failed:', error);
-                setError('Authentication failed. Please try again.');
                 setIsAuthenticated(false);
             } finally {
                 setIsLoading(false);
@@ -61,7 +76,7 @@ const App = () => {
         };
 
         authenticate();
-    }, [setUserDetails, setUserType, setIsAuthenticated, userType]);
+    }, [setUserDetails, setUserType, setIsAuthenticated]);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -70,7 +85,6 @@ const App = () => {
     return (
         <Router>
             <Navbar />
-           
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
@@ -84,18 +98,28 @@ const App = () => {
 
                 {/* Protected Routes */}
                 <Route
-                    path="/dashboard"
+                    path="/job-search"
                     element={
-                        <ProtectedRoute isAuthenticated={isAuthenticated} redirectTo="/studentlogin">
-                            <Dashboard />
+                        <ProtectedRoute
+                            isAuthenticated={isAuthenticated}
+                            redirectTo="/studentlogin"
+                            path="/job-search"
+                            userType={userType}
+                        > <Dashboard />
+                            
                         </ProtectedRoute>
                     }
                 />
                 <Route
-                    path="/businessdashboard"
+                    path="/candidate-search"
                     element={
-                        <ProtectedRoute isAuthenticated={isAuthenticated} redirectTo="/businesslogin">
-                            <BusinessDashboard />
+                        <ProtectedRoute
+                            isAuthenticated={isAuthenticated}
+                            redirectTo="/businesslogin"
+                            path="/candidate-search"
+                            userType={userType}
+                        ><SkillsForm />
+                           
                         </ProtectedRoute>
                     }
                 />
@@ -106,3 +130,5 @@ const App = () => {
 };
 
 export default App;
+
+

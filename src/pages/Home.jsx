@@ -39,8 +39,8 @@ const Home = () => {
     { iconClass: 'fa-drafting-compass', title: 'Design & Creative', vacancies: 123 },
   ];
 
-  const handleStudentNavigation = () => navigate("/dashboard");
-  const handleCompanyNavigation = () => navigate("/businessdashboard");
+  const handleStudentSkillsForm = () => navigate("/job-search");
+  const handleCompanySearchForm = () => navigate("/candidate-search");
 
   return (
     <div className="container-fluid p-0">
@@ -57,10 +57,10 @@ const Home = () => {
                   <div className="col-10 col-lg-8">
                     <h1 className="display-3 text-white animated slideInDown mb-4">{item.title}</h1>
                     <p className="fs-5 fw-medium text-white mb-4 pb-2">{item.desc}</p>
-                    <button onClick={handleStudentNavigation} className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
+                    <button onClick={handleStudentSkillsForm} className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
                       Search A Job
                     </button>
-                    <button onClick={handleCompanyNavigation} className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
+                    <button onClick={handleCompanySearchForm} className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
                       Find A Talent
                     </button>
                   </div>

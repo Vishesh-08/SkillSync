@@ -47,7 +47,7 @@ const BusinessLogin = () => {
   // Toggle password visibility
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/businessdashboard');
+      navigate('/candidate-search',{replace:true});
     }
   }, [isAuthenticated, navigate]);
 

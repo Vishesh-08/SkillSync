@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../css/SkillsForm.css"; // External CSS file
+import axios from "axios";
+import PotentialCandidates from "./PotentialCandidates";
 
 const SkillsForm = () => {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [jobRole, setJobRole] = useState("");
+  const [candidatesData, setCandidatesData] = useState(null);  // State to hold candidates data
   const dropdownRef = useRef(null);
 
   const skills = [
@@ -55,16 +58,38 @@ const SkillsForm = () => {
     };
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Selected Skills:", selectedSkills);
-    console.log("Job Role:", jobRole);
-    localStorage.setItem("selectedSkills", JSON.stringify(selectedSkills));
-    localStorage.setItem("jobRole", jobRole);
-    window.location.href = "Output.html"; // Replace with your desired path
+  
+    const payload = {
+      skills: selectedSkills,
+      jobRole,
+      gpa: document.getElementById("cgpa").value,
+      behavioralRemark: document.getElementById("behavioral_remark").value,
+    };
+  
+    try {
+      const response = await axios.post("http://localhost:5000/api/companies/search", payload);
+  
+      if (response.status === 201 || response.status === 200) {
+        alert("Form submitted successfully!");
+        console.log("Server Response:", response.data);
+  
+        // Ensure response.data is an array
+       
+          setCandidatesData(response.data.data);
+        
+      } else {
+        alert("Something went wrong! Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error.response ? error.response.data : error.message);
+      alert("An error occurred while submitting the form.");
+    }
   };
+  
 
-  return (
+  return candidatesData?<PotentialCandidates studentsData={candidatesData}/>:(
     <div className="cont">
       <form onSubmit={handleSubmit}>
         {/* Job Role Input */}
@@ -85,7 +110,6 @@ const SkillsForm = () => {
           <option value="Product Manager">Product Manager</option>
           <option value="UX/UI Designer">UX/UI Designer</option>
         </select>
-
 
         {/* Skills Input */}
         <label htmlFor="skills"><h2>Skills:</h2></label>
@@ -126,6 +150,9 @@ const SkillsForm = () => {
         {/* Submit Button */}
         <input type="submit" value="Submit" />
       </form>
+
+      {/* Render PotentialCandidates component conditionally */}
+      
     </div>
   );
 };

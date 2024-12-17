@@ -1,15 +1,16 @@
 const Student = require("../models/Student");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs"); // Add bcryptjs for password hashing
 require('dotenv').config();
-const server=process.env.SERVER_URL;
-console.log(server)
+const server = process.env.SERVER_URL;
+console.log(server);
 
 // Register student
 const registerStudent = async (req, res) => {
   try {
     const {
       fullName,
-      email,
+      
       phone,
       dob,
       location,
@@ -18,62 +19,62 @@ const registerStudent = async (req, res) => {
       yearOfStudy,
       gradDate,
       gpa,
-      jobType,
-      relocate,
+      jobPreferences,
+      skills,
+      certifications,
+      portfolio,
+      socialLinks,
       password,
     } = req.body;
+    const email =req.body.email
 
-    const skills = JSON.parse(req.body.skills || "[]");
-
-    // Validate all required fields
-    if (
-      !fullName ||
-      !email ||
-      !phone ||
-      !dob ||
-      !location ||
-      !university ||
-      !degree ||
-      !gradDate ||
-      !gpa ||
-      !jobType ||
-      !password
-    ) {
+    if (!fullName || !email || !phone || !dob || !location || !university || !degree || !gradDate || !gpa || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
-
-    // Check for existing student
+    
     const existingStudent = await Student.findOne({ email });
     if (existingStudent) {
       return res.status(400).json({ error: "Student with this email already exists" });
     }
 
-    // Create a new student with the plain password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newStudent = new Student({
-      fullName,
-      email,
-      phone,
-      dob,
-      location,
-      university,
-      degree,
-      yearOfStudy,
-      gradDate,
-      gpa,
-      jobType,
-      relocate,
-      resume: `${email}.pdf`,
-      skills,
-      password, // storing plain password (NOT recommended)
+      profile: {
+        fullName,
+        image: `${server || 'http://localhost:5000'}/api/students/upload/${req.body.photo || 'default.jpg'}`,
+      },email,
+      details: {
+        
+        phone,
+        dob,
+        location,
+        university,
+        degree,
+        gradDate,
+        gpa,
+      },
+      skills: skills ? JSON.parse(skills) : [],
+      certifications: certifications ? JSON.parse(certifications) : [],
+      portfolio: portfolio ? JSON.parse(portfolio) : [],
+      socialLinks: socialLinks ? JSON.parse(socialLinks) : [],
+      jobPreferences: jobPreferences ? JSON.parse(jobPreferences) : [],
+      resume: `${server || 'http://localhost:5000'}/api/students/upload/${req.body.resume || 'default.pdf'}`,
+      password: hashedPassword,
     });
+    
 
     await newStudent.save();
     res.status(201).json({ message: "Student registered successfully", student: newStudent });
   } catch (error) {
     console.error("Error registering student:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ error: "Duplicate email entry" });
+    }
     res.status(500).json({ error: "Error registering student" });
   }
 };
+
 
 // Login student
 const loginStudent = async (req, res) => {
@@ -87,82 +88,93 @@ const loginStudent = async (req, res) => {
 
     // Find the student by email
     const student = await Student.findOne({ email });
-    if (!student || student.password !== password) {
+    if (!student) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+    
+
+    // Compare passwords using bcrypt
+    const isMatch = await bcrypt.compare(password, student.password);
+    if (!isMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
     // Generate a token
-    const token = jwt.sign({ email: student.email, id: student._id ,userType:"student"}, process.env.JWT_SECRET, {
+    const token = jwt.sign({ email: student.email, id: student._id, userType: "student" }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
     // Format the response
     const studentResponse = {
       profile: {
-        fullName: student.fullName,
-        image: `${server || 'http://localhost:5000'}/api/students/upload/`+student.email+".jpg",
+        fullName: student.profile.fullName,
+        image: student.profile.image,
       },
       details: {
         email: student.email,
-        phone: student.phone,
-        dob: student.dob,
-        location: student.location,
-        university: student.university,
-        degree: student.degree,
-        gradDate: student.gradDate,
-        gpa: student.gpa,
+        phone: student.details.phone,
+        dob: student.details.dob,
+        location: student.details.location,
+        university: student.details.university,
+        degree: student.details.degree,
+        gradDate: student.details.gradDate,
+        gpa: student.details.gpa,
       },
       skills: student.skills,
-      certifications: student.certifications||[],
-      portfolio: student.portfolio||[],
-      socialLinks: student.socialLinks||[],
-      jobPreferences: student.jobPreferences||[],
+      certifications: student.certifications || [],
+      portfolio: student.portfolio || [],
+      socialLinks: student.socialLinks || [],
+      jobPreferences: student.jobPreferences || [],
+      resume:student.resume
     };
 
     // Respond with the token and formatted student object
-    return res
-      .status(200)
-      .json({
-        message: "Login successful",
-        redirect: "/dashboard",
-        user: studentResponse,
-        token,userType:"student"
-      });
+    return res.status(200).json({
+      message: "Login successful",
+      redirect: "/dashboard",
+      user: studentResponse,
+      token,
+      userType: "student",
+    });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ error: "An error occurred during login" });
   }
 };
-const studentAuth= async (req,res)=>{
-  const email=req.user.email
-  const studentRecord=await Student.findOne({email});
+
+// Student authentication
+const studentAuth = async (req, res) => {
+  const email = req.user.email;
+  const studentRecord = await Student.findOne({ email });
+
+  if (!studentRecord) {
+    return res.status(404).json({ error: "Student not found" });
+  }
+
   const studentResponse = {
     profile: {
-      fullName: studentRecord.fullName,
-      image: `${server || 'http://localhost:5000'}/api/students/upload/`+email+".jpg",
+      fullName: studentRecord.profile.fullName,
+      image: `${server || 'http://localhost:5000'}/api/students/upload/${email}.jpg`,
     },
     details: {
-      email: studentRecord.email,
-      phone: studentRecord.phone,
-      dob: studentRecord.dob,
-      location: studentRecord.location,
-      university: studentRecord.university,
-      degree: studentRecord.degree,
-      gradDate: studentRecord.gradDate,
-      gpa: studentRecord.gpa,
+      email: studentRecord.details.email,
+      phone: studentRecord.details.phone,
+      dob: studentRecord.details.dob,
+      location: studentRecord.details.location,
+      university: studentRecord.details.university,
+      degree: studentRecord.details.degree,
+      gradDate: studentRecord.details.gradDate,
+      gpa: studentRecord.details.gpa,
     },
     skills: studentRecord.skills,
-    certifications: studentRecord.certifications||[],
-    portfolio: studentRecord.portfolio||[],
-    socialLinks: studentRecord.socialLinks||[],
-    jobPreferences: studentRecord.jobPreferences||[],
+    certifications: studentRecord.certifications || [],
+    portfolio: studentRecord.portfolio || [],
+    socialLinks: studentRecord.socialLinks || [],
+    jobPreferences: studentRecord.jobPreferences || [],
   };
 
-  // Respond with the token and formatted student object
-  return res
-    .status(200)
-    .json({user: {...studentResponse,userType:"student"}});
+  // Respond with the student object
+  return res.status(200).json({ user: { ...studentResponse, userType: "student" } });
+};
 
-}
-
-module.exports = { registerStudent, loginStudent,studentAuth };
+module.exports = { registerStudent, loginStudent, studentAuth };

@@ -167,35 +167,66 @@ const companyAuth= async (req,res)=>{
 
 }
 const searchCandidate = async (req, res) => {
-  const skills = req.body.skills; // Expecting skills in the request body
-  const behaviorWeight = req.body.behaviorWeight || 1; // Default weights if not provided
-  const cgpaWeight = req.body.cgpaWeight || 1;
+  const { skills, behaviorWeight = 1, cgpaWeight = 1 } = req.body;
 
   if (!Array.isArray(skills) || skills.length === 0) {
-    return res.status(400).json({ message: 'Skills array is required and cannot be empty.' });
+    return res
+      .status(400)
+      .json({ message: "Skills array is required and cannot be empty." });
+  }
+
+  if (behaviorWeight <= 0 || cgpaWeight <= 0) {
+    return res.status(400).json({
+      message: "Weights (behaviorWeight and cgpaWeight) must be positive numbers.",
+    });
   }
 
   try {
-    // Find candidates matching at least one skill
-    const candidates = await Student.find({ skills: { $in: skills } });
+    // Fetch candidates excluding the password field
+    const candidates = await Student.find({ skills: { $in: skills } }).select(
+      "-password -otherFields" // Exclude unnecessary fields
+    );
 
     if (candidates.length === 0) {
-      return res.status(404).json({ message: 'No candidates found matching the criteria.' });
+      return res
+        .status(404)
+        .json({ message: "No candidates found matching the criteria." });
     }
 
-    // Rank candidates using your custom ranking function
-    const resultant_list = candidateRanked(candidates, skills, behaviorWeight, cgpaWeight);
+    // Rank candidates using the custom ranking function
+    const rankedCandidates = candidateRanked(
+      candidates,
+      skills,
+      behaviorWeight,
+      cgpaWeight
+    );
 
-    res.status(200).json({ 
-      data: resultant_list,
-      count: resultant_list.length, // Number of candidates found
-      query: { skills, behaviorWeight, cgpaWeight } // Echo the query parameters for debugging
+    // Only return the necessary fields
+    const filteredCandidates = rankedCandidates.map(candidate => ({
+      name: candidate._doc.fullName,
+      photo: candidate._doc.photo,
+      resume: candidate._doc.resume,
+      gpa: candidate._doc.gpa,
+      skills: candidate._doc.skills,
+      contact: candidate._doc.email,
+    }));
+
+    // Send the response
+    res.status(200).json({
+      data: filteredCandidates,
+      count: filteredCandidates.length,
+      query: { skills, behaviorWeight, cgpaWeight },
     });
   } catch (err) {
-    console.error('Error searching candidates:', err);
-    return res.status(500).json({ message: 'An error occurred while searching candidates.', error: err.message });
+    console.error("Error searching candidates:", err);
+    res.status(500).json({
+      message: "An error occurred while searching candidates.",
+      error: err.message,
+    });
   }
 };
+
+
 
 //TODO:search candidate has to be implement 
 //TODO:vacancy count function has to be implement 

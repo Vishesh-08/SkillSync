@@ -79,3 +79,143 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #004d40;
 }
+.SR-select,
+.SR-input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+  
+.SR-select:focus,
+.SR-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.SR-button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.SR-button-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.SR-button-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.SR-flex-gap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.SR-flex {
+  display: flex;
+  align-items: center;
+}
+
+.SR-items-center {
+  justify-content: center;
+}
+
+.SR-gap-2 {
+  gap: 10px;
+}
+
+.SR-social-media-icon {
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.SR-social-media-icon:hover {
+  transform: scale(1.2);
+}
+
+.SR-platform-name {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.SR-border {
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+}
+
+.SR-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.SR-subtitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #555;
+  margin: 15px 0;
+}
+
+.SR-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.SR-label {
+  font-size: 1rem;
+  color: #444;
+}
+
+.SR-remove-button {
+  background-color: transparent;
+  color: #f44336;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.SR-remove-button:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .SR-form-group {
+    gap: 10px;
+  }
+
+  .SR-button {
+    width: 100%;
+  }
+
+  .SR-flex-gap {
+    flex-direction: column;
+  }
+}

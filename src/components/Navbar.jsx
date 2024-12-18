@@ -45,7 +45,37 @@ const Navbar = () => {
                         </NavLink>
                     </div>
                     <a href="/post-job" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
-                        Post A Job <i className="fa fa-arrow-right ms-3"></i>
+                        
+                        <div
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            fontSize: "1.2rem",
+                            color: "#ffffff", // Adjust the text color as needed
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              marginRight: "8px",
+                            }}
+                          >
+                            <i className="fa fa-user"></i>
+                          </span>
+                          <span style={{ verticalAlign: "middle" }}>Profile</span>
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              marginLeft: "8px",
+                            }}
+                          >
+                            <i className="fa fa-arrow-right"></i>
+                          </span>
+                        </div>
                     </a>
                 </div>
             </nav>

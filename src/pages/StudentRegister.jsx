@@ -189,7 +189,9 @@ const handleFileChange = (e) => {
       setSocialMediaInput({ platform: "", url: "" }); // Reset input fields
     }
   };
-  
+  const handleRemoveSocialMedia = (index) => {
+    setSocialMediaLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
+  };
   const getIconClass = (platform) => {
     // You can map platform names to their respective FontAwesome icon classes
     const iconMap = {
@@ -639,19 +641,26 @@ const handleFileChange = (e) => {
           
 
         </fieldset>
-        <fieldset className="border p-3 mb-4">
-  <h2>Social Media</h2>
-  <div>
-    <label htmlFor="platform">Platform Name</label>
-    <input
-      type="text"
+        <fieldset className="SR-border SR-padding-3 SR-margin-bottom-4">
+  <h2 className="SR-section-title">Social Media</h2>
+  <div className="SR-form-group">
+    <label htmlFor="platform" className="SR-label">Platform Name</label>
+    <select
       name="platform"
       id="platform"
       value={socialMediaInput.platform}
       onChange={handleSocialMediaInputChange}
-      placeholder="Enter social media platform"
-    />
-    <label htmlFor="url">Social Media URL</label>
+      className="SR-select"
+    >
+      <option value="">Select Platform</option>
+      <option value="linkedin">LinkedIn</option>
+      <option value="github">GitHub</option>
+      <option value="twitter">Twitter</option>
+      <option value="facebook">Facebook</option>
+      {/* Add more options here */}
+    </select>
+
+    <label htmlFor="url" className="SR-label">Social Media URL</label>
     <input
       type="url"
       name="url"
@@ -659,32 +668,43 @@ const handleFileChange = (e) => {
       value={socialMediaInput.url}
       onChange={handleSocialMediaInputChange}
       placeholder="Enter URL"
+      className="SR-input"
     />
-    <button type="button" onClick={handleAddSocialMedia}>
+    <button 
+      type="button" 
+      onClick={handleAddSocialMedia} 
+      className="SR-button SR-button-primary">
       Add Social Media Link
     </button>
   </div>
 
-  <h3>Added Links:</h3>
-  <div className="flex-gap">
+  <h3 className="SR-subtitle">Added Links:</h3>
+  <div className="SR-flex-gap">
     {socialMediaLinks.map((social, index) => (
-      <a
-        key={index}
-        href={social.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2"
-      >
-        <i
-          className={`fab ${social.iconClass} social-media-icon`}
-          style={{ color: social.color }}
-        ></i>
-        <span>{social.platform}</span>
-      </a>
+      <div key={index} className="SR-link-item">
+        <a
+          href={social.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="SR-flex SR-items-center SR-gap-2"
+        >
+          <i
+            className={`fab ${social.iconClass} SR-social-media-icon`}
+            style={{ color: social.color }}
+          ></i>
+          <span className="SR-platform-name">{social.platform}</span>
+        </a>
+        <button
+          type="button"
+          onClick={() => handleRemoveSocialMedia(index)}
+          className="SR-remove-button"
+        >
+          x
+        </button>
+      </div>
     ))}
   </div>
 </fieldset>
-
 
         {/* Job Preferences Section */}
         <fieldset className="border p-3 mb-4">

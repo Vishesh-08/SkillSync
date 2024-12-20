@@ -37,7 +37,7 @@ const [formData, setFormData] = useState({
 });
 const [jobPreferences,setJobPreferences]=useState([]);
 
-  const availableSkills = [];
+  
   const handleJobPreferenceChange = (e) => {
     const { value, checked } = e.target;
     

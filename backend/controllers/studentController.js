@@ -38,6 +38,7 @@ const registerStudent = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    
 
     const newStudent = new Student({
       profile: {
@@ -58,7 +59,7 @@ const registerStudent = async (req, res) => {
       certifications: certifications ? JSON.parse(certifications) : [],
       portfolio: portfolio ? JSON.parse(portfolio) : [],
       socialLinks: socialLinks ? JSON.parse(socialLinks) : [],
-      jobPreferences: jobPreferences ? JSON.parse(jobPreferences) : [],
+      jobPreferences: jobPreferences ? jobPreferences.split(",") : [],
       resume: `${server || 'http://localhost:5000'}/api/students/upload/${req.body.resume || 'default.pdf'}`,
       password: hashedPassword,
     });
@@ -154,7 +155,7 @@ const studentAuth = async (req, res) => {
   const studentResponse = {
     profile: {
       fullName: studentRecord.profile.fullName,
-      image: `${server || 'http://localhost:5000'}/api/students/upload/${email}.jpg`,
+      image: studentRecord.profile.image,
     },
     details: {
       email: studentRecord.details.email,

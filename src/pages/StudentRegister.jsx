@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import "../css/StudentRegister.css"
 import "../godfather_css/style.css";
 import { cities } from './cities';
@@ -6,7 +6,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 
 const StudentRegistration = () => {
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  
   
   const [showPassword, setShowPassword] = useState(false);
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
@@ -27,52 +27,32 @@ const [formData, setFormData] = useState({
   yearOfStudy: "",
   gradDate: "",
   gpa: "",
-  jobPreferences: [],
+  
   relocate: false,
   portfolio: "",
   socialMediaLinks: [],
   resume: null,
   photo: null,
+  skills:[]
 });
+const [jobPreferences,setJobPreferences]=useState([]);
 
-  const availableSkills = [
-    "Communication",
-    "Conflict Resolution",
-    "Employee Relations",
-    "Data Analysis",
-    "Problem Solving",
-    "Strategic Planning",
-    "Java",
-    "Spring Boot",
-    "Hibernate",
-    "REST API",
-    "MongoDB",
-    "Express.js",
-    "React.js",
-    "Node.js",
-    "PHP",
-    "Laravel",
-    "WordPress",
-    "MySQL",
-  ];
+  const availableSkills = [];
   const handleJobPreferenceChange = (e) => {
     const { value, checked } = e.target;
+    
   
-    setFormData((prevData) => {
-      let updatedJobPreferences = [...prevData.jobPreferences];
-  
+    setJobPreferences((prev) => {
       if (checked) {
-        updatedJobPreferences.push(value);
+        // Add the selected job preference
+        return [...prev, value];
       } else {
-        updatedJobPreferences = updatedJobPreferences.filter((job) => job !== value);
+        // Remove the unselected job preference
+        return prev.filter((preference) => preference !== value);
       }
-  
-      return {
-        ...prevData,
-        jobPreferences: updatedJobPreferences,
-      };
     });
   };
+  
   
 
   const handleChange = (e) => {
@@ -88,13 +68,7 @@ const [formData, setFormData] = useState({
 const [selectedSkills, setSelectedSkills] = useState([]);
 const [selectedCertifications, setSelectedCertifications] = useState([]);
 
-const handleSkillSelect = (skill) => {
-  setSelectedSkills((prevSkills) => [...prevSkills, skill]);
-};
-
-const handleSkillRemove = (skill) => {
-  setSelectedSkills((prevSkills) => prevSkills.filter((s) => s !== skill));
-};
+;
 
 const handleCertificationAdd = () => {
   if (newCertification.trim()) {
@@ -146,10 +120,7 @@ const handleFileChange = (e) => {
   //skills script
   
 
-  const handleDropdownToggle = (event) => {
-    event.stopPropagation();
-    setIsDropdownVisible(!isDropdownVisible);
-  };
+ 
   
 
 
@@ -174,6 +145,56 @@ const handleFileChange = (e) => {
       [name]: value,
     }));
   };
+  const dropdownRef = useRef(null);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const skills = [
+    "Communication",
+    "Conflict Resolution",
+    "Employee Relations",
+    "Data Analysis",
+    "Problem Solving",
+    "Strategic Planning",
+    "Java",
+    "Spring Boot",
+    "Hibernate",
+    "REST API",
+    "MongoDB",
+    "Express.js",
+    "React.js",
+    "Node.js",
+    "PHP",
+    "Laravel",
+    "WordPress",
+    "MySQL",
+  ];
+
+const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const addSkill = (skill) => {
+    if (!selectedSkills.includes(skill)) {
+      setSelectedSkills([...selectedSkills, skill]);
+    }
+  };
+
+  const removeSkill = (skill) => {
+    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+  };
+
+  const handleOutsideClick = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
+
   
   const handleAddSocialMedia = () => {
     if (socialMediaInput.platform && socialMediaInput.url) {
@@ -248,8 +269,9 @@ const handleFileChange = (e) => {
     submissionData.append("yearOfStudy", formData.yearOfStudy);
     submissionData.append("gradDate", formData.gradDate);
     submissionData.append("gpa", formData.gpa);
-    submissionData.append("jobType", formData.jobPreferences.join(","));
+    submissionData.append("jobPreferences", jobPreferences);
     submissionData.append("relocate", formData.relocate ? "true" : "false");
+    
   
     // Append JSON fields (social media, skills, certifications)
     submissionData.append("socialLinks", JSON.stringify(socialMediaLinks));
@@ -482,64 +504,41 @@ const handleFileChange = (e) => {
           </div>
         </fieldset>
 
-        {/* Skills & Interests Section */}
-        <fieldset className="border p-3 mb-4">
-  <legend className="w-auto">Skills & Interests</legend>
-  <div>
-    <label htmlFor="skills">Skills:</label>
-    <div className="skills-container">
-      <div
-        className="select-box"
-        onClick={() => setIsDropdownVisible((prev) => !prev)}
-      >
-        {/* Placeholder for empty selection */}
-        <span
-          className="placeholder"
-          style={{ display: selectedSkills.length ? "none" : "block" }}
-        >
-          Select skills...
-        </span>
+       {/* Skills & Interests Section */}
+       <fieldset className="border p-3 mb-4">
 
-        {/* Display selected skills as removable bubbles */}
-        <div className="selected-skills">
-          {selectedSkills.map((skill, index) => (
-            <div key={index} className="skill-bubble">
-              {skill}
-              <span
-                className="remove-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSkillRemove(skill);
-                }}
-              >
-                ×
-              </span>
-            </div>
-          ))}
+<legend className="w-auto">Skills & Interests</legend>
+<div>
+
+        {/* Skills Input */}
+      <label htmlFor="skills" className="form-label">Skills:</label>
+      <div className="skills-container" ref={dropdownRef} onClick={toggleDropdown}>
+        <div className="select-box">
+          <span className="placeholder" style={{ display: selectedSkills.length ? "none" : "block" }}>
+            Select skills...
+          </span>
+          <div className="selected-skills">
+            {selectedSkills.map((skill, index) => (
+              <div key={index} className="skill-bubble">
+                {skill}
+                <span className="remove-btn" onClick={() => removeSkill(skill)}>×</span>
+              </div>
+            ))}
+          </div>
+          <span className="arrow">&#9662;</span>
         </div>
-
-        {/* Dropdown toggle arrow */}
-        <span className="arrow">&#9662;</span>
+        {isDropdownVisible && (
+          <div className={`skills-dropdown ${isDropdownVisible ? "visible" : ""}`}>
+            {skills.map((skill, index) => (
+              <div key={index} onClick={() => addSkill(skill)}>
+                {skill}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Dropdown menu for skill selection */}
-      {isDropdownVisible && (
-        <div className="skills-dropdown">
-          {availableSkills.map((skill) => (
-            <option
-              key={skill}
-              className="dropdown-item"
-              onClick={() => handleSkillSelect(skill)}
-            >
-              {skill}
-            </option>
-          ))}
-        </div>
-      )}
-    </div>
-  </div>
-
-  <div className="mt-4">
+      </div>
+      <div className="mt-4">
     <label htmlFor="certifications">Certifications:</label>
     <div className="certifications-container">
       {/* Input field for adding certifications */}
@@ -641,8 +640,62 @@ const handleFileChange = (e) => {
           
 
         </fieldset>
+
+
+
+
+
+        
+
+
+
+
+        {/* Portfolio or Resume Section */}
+        <fieldset className="border p-3 mb-4">
+          <legend className="w-auto">Portfolio or Resume (Optional)</legend>
+          <div className="mb-3">
+            <label htmlFor="resume" className="form-label">
+              Upload Resume (PDF, DOCX):
+            </label>
+            <input
+              type="file"
+              id="resume"
+              name="resume"
+              className="form-control"
+              onChange={handleFileChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="photo" className="form-label">
+              Upload Photo (PNG, JPEG):
+            </label>
+            <input
+              type="file"
+              id="photo"
+              name="photo"
+              className="form-control"
+              onChange={handleFileChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="portfolio" className="form-label">
+              Portfolio/Website Link:
+            </label>
+            <input
+              type="url"
+              id="portfolio"
+              name="portfolio"
+              className="form-control"
+              placeholder="Enter the link to your portfolio or personal website"
+              value={formData.portfolio}
+              onChange={handleChange}
+            />
+          </div>
+          
+
+        </fieldset>
         <fieldset className="SR-border SR-padding-3 SR-margin-bottom-4">
-  <h2 className="SR-section-title">Social Media</h2>
+  <h2 className="w-auto">Social Media</h2>
   <div className="SR-form-group">
     <label htmlFor="platform" className="SR-label">Platform Name</label>
     <select
@@ -707,76 +760,54 @@ const handleFileChange = (e) => {
 </fieldset>
 
         {/* Job Preferences Section */}
-        <fieldset className="border p-3 mb-4">
-        <legend className="w-auto">Job Preferences</legend>
+        
 
-        <div className="mb-3">
-          <label className="form-label">Preferred Job Types:</label>
-          <div>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="fullTime"
-                name="jobType"
-                value="Full-time"
-                checked={formData.jobPreferences.includes("Full-time")}
-                onChange={handleJobPreferenceChange}
-                className="form-check-input"
-              />
-              <label htmlFor="fullTime" className="form-check-label">
-                Full-time
-              </label>
-            </div>
+  {/* Preferred Job Types */}
+  <fieldset className="border p-3 mb-4">
+  <legend className="w-auto">Job Preferences</legend>
 
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="partTime"
-                name="jobType"
-                value="Part-time"
-                checked={formData.jobPreferences.includes("Part-time")}
-                onChange={handleJobPreferenceChange}
-                className="form-check-input"
-              />
-              <label htmlFor="partTime" className="form-check-label">
-                Part-time
-              </label>
-            </div>
-
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="internship"
-                name="jobType"
-                value="Internship"
-                checked={formData.jobPreferences.includes("Internship")}
-                onChange={handleJobPreferenceChange}
-                className="form-check-input"
-              />
-              <label htmlFor="internship" className="form-check-label">
-                Internship
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="relocate" className="form-label">
-            Willing to Relocate:
+  <div className="mb-3">
+    <label className="form-label">Preferred Job Types:</label>
+    <div>
+      {["Full-time", "Part-time", "Internship"].map((jobType) => (
+        <div className="form-check" key={jobType}>
+          <input
+            type="checkbox"
+            id={jobType}
+            name="jobType"
+            value={jobType}
+            checked={Array.isArray(jobPreferences) && jobPreferences.includes(jobType)} // Guard against undefined
+            onChange={handleJobPreferenceChange}
+            className="form-check-input"
+          />
+          <label htmlFor={jobType} className="form-check-label">
+            {jobType}
           </label>
-          <select
-            id="relocate"
-            name="relocate"
-            className="form-select"
-            value={formData.relocate === true ? "Yes" : "No"} // Convert boolean back to Yes/No
-            onChange={handleRelocateChange}
-            required
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
         </div>
-      </fieldset>
+      ))}
+    </div>
+  </div>
+
+
+  {/* Relocation Preference */}
+  <div className="mb-3">
+    <label htmlFor="relocate" className="form-label">
+      Willing to Relocate:
+    </label>
+    <select
+      id="relocate"
+      name="relocate"
+      className="form-select"
+      value={formData.relocate ? "Yes" : "No"} // Convert boolean to Yes/No
+      onChange={handleRelocateChange}
+      required
+    >
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </div>
+</fieldset>
+
 
 
         <button type="submit" className="btn btn-primary">

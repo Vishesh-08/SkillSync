@@ -10,7 +10,7 @@ const StudentRegistration = () => {
   
   const [showPassword, setShowPassword] = useState(false);
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
-const [socialMediaInput, setSocialMediaInput] = useState({
+  const [socialMediaInput, setSocialMediaInput] = useState({
   platform: "",
   url: "",
 });
@@ -210,9 +210,12 @@ const toggleDropdown = () => {
       setSocialMediaInput({ platform: "", url: "" }); // Reset input fields
     }
   };
+
   const handleRemoveSocialMedia = (index) => {
     setSocialMediaLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
   };
+  
+  
   const getIconClass = (platform) => {
     // You can map platform names to their respective FontAwesome icon classes
     const iconMap = {
@@ -307,6 +310,61 @@ const toggleDropdown = () => {
       alert("Error: " + (error.response?.data?.message || error.message));
     }
   };
+
+
+
+//Trial for skills
+
+const dropdownRef = useRef(null);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const skills = [
+    "Communication",
+    "Conflict Resolution",
+    "Employee Relations",
+    "Data Analysis",
+    "Problem Solving",
+    "Strategic Planning",
+    "Java",
+    "Spring Boot",
+    "Hibernate",
+    "REST API",
+    "MongoDB",
+    "Express.js",
+    "React.js",
+    "Node.js",
+    "PHP",
+    "Laravel",
+    "WordPress",
+    "MySQL",
+  ];
+
+const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const addSkill = (skill) => {
+    if (!selectedSkills.includes(skill)) {
+      setSelectedSkills([...selectedSkills, skill]);
+    }
+  };
+
+  const removeSkill = (skill) => {
+    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+  };
+
+  const handleOutsideClick = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
+
   return (
     <div className="registration-form" >
       <h1 className="mb-4 text-center">Student Registration</h1>
@@ -694,6 +752,7 @@ const toggleDropdown = () => {
           
 
         </fieldset>
+
         <fieldset className="SR-border SR-padding-3 SR-margin-bottom-4">
   <h2 className="w-auto">Social Media</h2>
   <div className="SR-form-group">
@@ -758,6 +817,9 @@ const toggleDropdown = () => {
     ))}
   </div>
 </fieldset>
+
+
+
 
         {/* Job Preferences Section */}
         

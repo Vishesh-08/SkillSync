@@ -79,6 +79,7 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #004d40;
 }
+    
 .SR-select,
 .SR-input {
   padding: 10px;
@@ -152,7 +153,7 @@ input[type="submit"]:hover {
 }
 
 .SR-border {
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -219,143 +220,119 @@ input[type="submit"]:hover {
     flex-direction: column;
   }
 }
-.SR-select,
-.SR-input {
-  padding: 10px;
-  font-size: 1rem;
+
+/* Addition is css */
+
+/* Container for certifications */
+.certifications-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+/* Select box styling */
+.select-box {
   border: 1px solid #ccc;
-  border-radius: 5px;
-  outline: none;
+  border-radius: 8px;
+  padding: 10px 12px;
   background-color: #fff;
-  transition: border-color 0.3s ease;
-}
-
-  
-.SR-select:focus,
-.SR-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-.SR-button {
-  padding: 10px 15px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.SR-button-primary {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.SR-button-primary:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-.SR-flex-gap {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-top: 15px;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.SR-flex {
+/* Placeholder text */
+.placeholder {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* Selected certifications bubble container */
+.selected-certifications {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Individual certification bubble */
+.certification-bubble {
+  background-color: #0073e6;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
   display: flex;
   align-items: center;
 }
 
-.SR-items-center {
+/* Remove button for bubbles */
+.certification-bubble .remove-btn {
+  margin-left: 8px;
+  color: #fff;
+  background-color: #e60000;
+  border-radius: 50%;
+  font-size: 12px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
-.SR-gap-2 {
-  gap: 10px;
-}
-
-.SR-social-media-icon {
-  font-size: 1.5rem;
-  transition: transform 0.3s ease;
-}
-
-.SR-social-media-icon:hover {
-  transform: scale(1.2);
-}
-
-.SR-platform-name {
-  font-size: 1rem;
+/* Arrow for dropdown */
+.arrow {
+  font-size: 16px;
   color: #333;
-  font-weight: 500;
+  margin-left: auto;
 }
 
-.SR-border {
-  border: 2px solid #ccc;
+/* Dropdown menu container */
+.certifications-dropdown {
+  border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
   background-color: #fff;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  padding: 10px;
+  margin-top: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.SR-section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
+/* Input inside dropdown */
+.certifications-dropdown input {
+  width: calc(100% - 100px);
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   margin-bottom: 10px;
 }
 
-.SR-subtitle {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: #555;
-  margin: 15px 0;
-}
-
-.SR-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.SR-label {
-  font-size: 1rem;
-  color: #444;
-}
-
-.SR-remove-button {
-  background-color: transparent;
-  color: #f44336;
+/* Add button */
+.add-btn {
+  background-color: #0073e6;
+  color: #fff;
   border: none;
-  font-size: 1.2rem;
+  padding: 8px 12px;
+  font-size: 14px;
   cursor: pointer;
-  padding: 0;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
+  border-radius: 4px;
 }
 
-.SR-remove-button:hover {
-  background-color: #f44336;
-  color: white;
+.add-btn:hover {
+  background-color: #005bb5;
 }
 
-@media (max-width: 768px) {
-  .SR-form-group {
-    gap: 10px;
-  }
 
-  .SR-button {
-    width: 100%;
-  }
 
-  .SR-flex-gap {
-    flex-direction: column;
-  }
-}
+  
+  

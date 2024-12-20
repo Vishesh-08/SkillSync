@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import "../css/StudentRegister.css"
 import "../godfather_css/style.css";
 import { cities } from './cities';
@@ -6,11 +6,12 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 
 const StudentRegistration = () => {
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  
+     // State to hold candidates data
   
   const [showPassword, setShowPassword] = useState(false);
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
-const [socialMediaInput, setSocialMediaInput] = useState({
+  const [socialMediaInput, setSocialMediaInput] = useState({
   platform: "",
   url: "",
 });
@@ -33,28 +34,9 @@ const [formData, setFormData] = useState({
   socialMediaLinks: [],
   resume: null,
   photo: null,
+  skills:[]
 });
 
-  const availableSkills = [
-    "Communication",
-    "Conflict Resolution",
-    "Employee Relations",
-    "Data Analysis",
-    "Problem Solving",
-    "Strategic Planning",
-    "Java",
-    "Spring Boot",
-    "Hibernate",
-    "REST API",
-    "MongoDB",
-    "Express.js",
-    "React.js",
-    "Node.js",
-    "PHP",
-    "Laravel",
-    "WordPress",
-    "MySQL",
-  ];
   const handleJobPreferenceChange = (e) => {
     const { value, checked } = e.target;
   
@@ -88,13 +70,7 @@ const [formData, setFormData] = useState({
 const [selectedSkills, setSelectedSkills] = useState([]);
 const [selectedCertifications, setSelectedCertifications] = useState([]);
 
-const handleSkillSelect = (skill) => {
-  setSelectedSkills((prevSkills) => [...prevSkills, skill]);
-};
 
-const handleSkillRemove = (skill) => {
-  setSelectedSkills((prevSkills) => prevSkills.filter((s) => s !== skill));
-};
 
 const handleCertificationAdd = () => {
   if (newCertification.trim()) {
@@ -141,20 +117,7 @@ const handleFileChange = (e) => {
 
   setFormData({ ...formData, [name]: file });
 };
-
-
-  //skills script
   
-
-  const handleDropdownToggle = (event) => {
-    event.stopPropagation();
-    setIsDropdownVisible(!isDropdownVisible);
-  };
-  
-
-
-  
-
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (!event.target.closest('.skills-container')) {
@@ -189,9 +152,12 @@ const handleFileChange = (e) => {
       setSocialMediaInput({ platform: "", url: "" }); // Reset input fields
     }
   };
+
   const handleRemoveSocialMedia = (index) => {
     setSocialMediaLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
   };
+  
+  
   const getIconClass = (platform) => {
     // You can map platform names to their respective FontAwesome icon classes
     const iconMap = {
@@ -285,6 +251,61 @@ const handleFileChange = (e) => {
       alert("Error: " + (error.response?.data?.message || error.message));
     }
   };
+
+
+
+//Trial for skills
+
+const dropdownRef = useRef(null);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const skills = [
+    "Communication",
+    "Conflict Resolution",
+    "Employee Relations",
+    "Data Analysis",
+    "Problem Solving",
+    "Strategic Planning",
+    "Java",
+    "Spring Boot",
+    "Hibernate",
+    "REST API",
+    "MongoDB",
+    "Express.js",
+    "React.js",
+    "Node.js",
+    "PHP",
+    "Laravel",
+    "WordPress",
+    "MySQL",
+  ];
+
+const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const addSkill = (skill) => {
+    if (!selectedSkills.includes(skill)) {
+      setSelectedSkills([...selectedSkills, skill]);
+    }
+  };
+
+  const removeSkill = (skill) => {
+    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+  };
+
+  const handleOutsideClick = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
+
   return (
     <div className="registration-form" >
       <h1 className="mb-4 text-center">Student Registration</h1>
@@ -484,60 +505,47 @@ const handleFileChange = (e) => {
 
         {/* Skills & Interests Section */}
         <fieldset className="border p-3 mb-4">
+
   <legend className="w-auto">Skills & Interests</legend>
   <div>
-    <label htmlFor="skills">Skills:</label>
-    <div className="skills-container">
-      <div
-        className="select-box"
-        onClick={() => setIsDropdownVisible((prev) => !prev)}
-      >
-        {/* Placeholder for empty selection */}
-        <span
-          className="placeholder"
-          style={{ display: selectedSkills.length ? "none" : "block" }}
-        >
-          Select skills...
-        </span>
 
-        {/* Display selected skills as removable bubbles */}
-        <div className="selected-skills">
-          {selectedSkills.map((skill, index) => (
-            <div key={index} className="skill-bubble">
-              {skill}
-              <span
-                className="remove-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSkillRemove(skill);
-                }}
-              >
-                ×
-              </span>
+          {/* Skills Input */}
+        <label htmlFor="skills" className="form-label">Skills:</label>
+        <div className="skills-container" ref={dropdownRef} onClick={toggleDropdown}>
+          <div className="select-box">
+            <span className="placeholder" style={{ display: selectedSkills.length ? "none" : "block" }}>
+              Select skills...
+            </span>
+            <div className="selected-skills">
+              {selectedSkills.map((skill, index) => (
+                <div key={index} className="skill-bubble">
+                  {skill}
+                  <span className="remove-btn" onClick={() => removeSkill(skill)}>×</span>
+                </div>
+              ))}
             </div>
-          ))}
+            <span className="arrow">&#9662;</span>
+          </div>
+          {isDropdownVisible && (
+            <div className={`skills-dropdown ${isDropdownVisible ? "visible" : ""}`}>
+              {skills.map((skill, index) => (
+                <div key={index} onClick={() => addSkill(skill)}>
+                  {skill}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         </div>
 
-        {/* Dropdown toggle arrow */}
-        <span className="arrow">&#9662;</span>
-      </div>
 
-      {/* Dropdown menu for skill selection */}
-      {isDropdownVisible && (
-        <div className="skills-dropdown">
-          {availableSkills.map((skill) => (
-            <option
-              key={skill}
-              className="dropdown-item"
-              onClick={() => handleSkillSelect(skill)}
-            >
-              {skill}
-            </option>
-          ))}
-        </div>
-      )}
-    </div>
-  </div>
+
+
+
+
+
+
+    
 
   <div className="mt-4">
     <label htmlFor="certifications">Certifications:</label>
@@ -641,8 +649,9 @@ const handleFileChange = (e) => {
           
 
         </fieldset>
+
         <fieldset className="SR-border SR-padding-3 SR-margin-bottom-4">
-  <h2 className="SR-section-title">Social Media</h2>
+        <legend className="w-auto">Social Media</legend>
   <div className="SR-form-group">
     <label htmlFor="platform" className="SR-label">Platform Name</label>
     <select
@@ -705,6 +714,9 @@ const handleFileChange = (e) => {
     ))}
   </div>
 </fieldset>
+
+
+
 
         {/* Job Preferences Section */}
         <fieldset className="border p-3 mb-4">

@@ -44,7 +44,7 @@ const Navbar = () => {
                             Contact
                         </NavLink>
                     </div>
-                    <a href="/post-job" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
+                    <a href="/job-search" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
                         
                         <div
                           style={{

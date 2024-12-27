@@ -203,10 +203,10 @@ const searchCandidate = async (req, res) => {
 
     // Only return the necessary fields
     const filteredCandidates = rankedCandidates.map(candidate => ({
-      name: candidate._doc.fullName,
-      photo: candidate._doc.photo,
+      name: candidate._doc.profile.fullName,
+      image: candidate._doc.profile.image,
       resume: candidate._doc.resume,
-      gpa: candidate._doc.gpa,
+      gpa: candidate._doc.details.gpa,
       skills: candidate._doc.skills,
       contact: candidate._doc.email,
     }));

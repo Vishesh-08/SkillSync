@@ -21,7 +21,7 @@ const PotentialCandidates = ({ studentsData }) => {
             <tr key={index} className="pc-table-row">
               <td className="pc-table-cell">{candidate.name}</td>
               <td className="pc-table-cell">
-                <img src={candidate.photo} alt={`${candidate.name} Photo`} className="pc-candidate-photo" />
+                <img src={candidate.image} alt={`${candidate.name} Photo`} className="pc-candidate-photo" />
               </td>
               <td className="pc-table-cell">
                 <a href={candidate.resume} target="_blank" rel="noopener noreferrer" className="pc-resume-link">

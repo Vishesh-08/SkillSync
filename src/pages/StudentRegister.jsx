@@ -145,48 +145,7 @@ const handleFileChange = (e) => {
       [name]: value,
     }));
   };
-  const dropdownRef = useRef(null);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const skills = [
-    "Communication",
-    "Conflict Resolution",
-    "Employee Relations",
-    "Data Analysis",
-    "Problem Solving",
-    "Strategic Planning",
-    "Java",
-    "Spring Boot",
-    "Hibernate",
-    "REST API",
-    "MongoDB",
-    "Express.js",
-    "React.js",
-    "Node.js",
-    "PHP",
-    "Laravel",
-    "WordPress",
-    "MySQL",
-  ];
 
-const toggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
-  };
-
-  const addSkill = (skill) => {
-    if (!selectedSkills.includes(skill)) {
-      setSelectedSkills([...selectedSkills, skill]);
-    }
-  };
-
-  const removeSkill = (skill) => {
-    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
-  };
-
-  const handleOutsideClick = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsDropdownVisible(false);
-    }
-  };
 
   useEffect(() => {
     document.addEventListener("click", handleOutsideClick);
@@ -708,50 +667,7 @@ const toggleDropdown = () => {
 
 
 
-        {/* Portfolio or Resume Section */}
-        <fieldset className="border p-3 mb-4">
-          <legend className="w-auto">Portfolio or Resume (Optional)</legend>
-          <div className="mb-3">
-            <label htmlFor="resume" className="form-label">
-              Upload Resume (PDF, DOCX):
-            </label>
-            <input
-              type="file"
-              id="resume"
-              name="resume"
-              className="form-control"
-              onChange={handleFileChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="photo" className="form-label">
-              Upload Photo (PNG, JPEG):
-            </label>
-            <input
-              type="file"
-              id="photo"
-              name="photo"
-              className="form-control"
-              onChange={handleFileChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="portfolio" className="form-label">
-              Portfolio/Website Link:
-            </label>
-            <input
-              type="url"
-              id="portfolio"
-              name="portfolio"
-              className="form-control"
-              placeholder="Enter the link to your portfolio or personal website"
-              value={formData.portfolio}
-              onChange={handleChange}
-            />
-          </div>
-          
-
-        </fieldset>
+       
 
         <fieldset className="SR-border SR-padding-3 SR-margin-bottom-4">
   <h2 className="w-auto">Social Media</h2>

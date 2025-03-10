@@ -9,6 +9,9 @@ const {isAuthenticated}=require("./middleware/auth");
 const { FcNext } = require('react-icons/fc');
 require('dotenv').config();
 
+
+
+
 const app = express();
 app.use(express.json()); // For JSON bodies
 app.use(express.urlencoded({ extended: true }));
